@@ -54,8 +54,9 @@ class StatusBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        LinearProgressIndicator(
-          value: 0.1,
+        Slider(
+          onChanged: (double a) {},
+          value: 0,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
