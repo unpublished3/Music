@@ -1,10 +1,36 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
 import "package:flutter/material.dart";
+import "package:just_audio/just_audio.dart";
 
-class PlayerUI extends StatelessWidget {
+class PlayerUI extends StatefulWidget {
   PlayerUI({super.key});
-  bool isPlaying = false;
+
+  @override
+  State<PlayerUI> createState() => _PlayerUIState();
+}
+
+class _PlayerUIState extends State<PlayerUI> {
+  final player = AudioPlayer();
+  bool _isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setUrl();
+  }
+
+  void setUrl() async {
+    await player.setUrl('asset:///assets/file.mp3');
+  }
+
+  void playPause() async {
+    if (_isPlaying) {
+      await player.pause();
+    } else {
+      await player.play();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +68,15 @@ class PlayerUI extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Icon(Icons.skip_previous),
-              Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+              ElevatedButton(
+                onPressed: () {
+                  playPause();
+                  setState(() {
+                    _isPlaying = !_isPlaying;
+                  });
+                },
+                child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+              ),
               Icon(Icons.skip_next)
             ],
           )
