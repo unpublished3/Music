@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable
 
 import "package:flutter/material.dart";
 
 class PlayerUI extends StatelessWidget {
-  const PlayerUI({super.key});
+  PlayerUI({super.key});
+  bool isPlaying = false;
 
   @override
   Widget build(BuildContext context) {
@@ -14,83 +15,39 @@ class PlayerUI extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Music Image
-          Thumbnail(),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.35,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.red,
+          ),
 
-          Name(),
+          Column(
+            children: [Text("Name"), Text("Artist")],
+          ),
 
-          StatusBar(),
+          Column(
+            children: [
+              Slider(
+                onChanged: (double a) {},
+                value: 0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [Text("Current Time"), Text("End Time")],
+              )
+            ],
+          ),
 
-          MediaControls()
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Icon(Icons.skip_previous),
+              Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+              Icon(Icons.skip_next)
+            ],
+          )
         ],
       ),
-    );
-  }
-}
-
-class MediaControls extends StatelessWidget {
-  const MediaControls({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Icon(Icons.skip_previous),
-        Icon(Icons.pause_circle_filled_rounded),
-        Icon(Icons.skip_next)
-      ],
-    );
-  }
-}
-
-class StatusBar extends StatelessWidget {
-  const StatusBar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Slider(
-          onChanged: (double a) {},
-          value: 0,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [Text("Current Time"), Text("End Time")],
-        )
-      ],
-    );
-  }
-}
-
-class Name extends StatelessWidget {
-  const Name({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [Text("Name"), Text("Artist")],
-    );
-  }
-}
-
-class Thumbnail extends StatelessWidget {
-  const Thumbnail({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.35,
-      width: MediaQuery.of(context).size.width,
-      color: Colors.red,
     );
   }
 }
