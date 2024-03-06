@@ -13,6 +13,7 @@ class PlayerUI extends StatefulWidget {
 class _PlayerUIState extends State<PlayerUI> {
   final player = AudioPlayer();
   bool _isPlaying = false;
+  Duration? current = Duration.zero, duration = Duration.zero;
 
   @override
   void initState() {
@@ -22,6 +23,7 @@ class _PlayerUIState extends State<PlayerUI> {
 
   void setUrl() async {
     await player.setUrl('asset:///assets/file.mp3');
+    duration = player.duration;
   }
 
   void playPause() async {
@@ -30,6 +32,15 @@ class _PlayerUIState extends State<PlayerUI> {
     } else {
       await player.play();
     }
+  }
+
+  String formatDuration(Duration? duration) {
+    if (duration != null) {
+      final minutes = duration.inMinutes;
+      final seconds = duration.inSeconds % 60;
+      return '$minutes:${seconds.toString().padLeft(2, '0')}';
+    }
+    return "0:00";
   }
 
   @override
@@ -59,7 +70,10 @@ class _PlayerUIState extends State<PlayerUI> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Text("Current Time"), Text("End Time")],
+                children: [
+                  Text(formatDuration(current)),
+                  Text(formatDuration(duration))
+                ],
               )
             ],
           ),
