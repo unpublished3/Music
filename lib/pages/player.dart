@@ -14,23 +14,27 @@ class PlayerUI extends StatefulWidget {
 
 class _PlayerUIState extends State<PlayerUI> {
   final player = AudioPlayer();
+
+  // Application State
   bool _isPlaying = false;
   Duration? current = Duration.zero, duration = Duration.zero;
+  double percentageComplete = 0;
 
   @override
   void initState() {
     super.initState();
     setUrl();
 
-    Timer.periodic(Duration(seconds: 1), (timer) { 
+    Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         current = player.position;
+        percentageComplete = getPercentageComplete(current, duration);
       });
     });
   }
 
   void setUrl() async {
-    await player.setUrl('asset:///assets/file.mp3');
+    await player.setUrl('asset:///assets/File.mp3');
     duration = player.duration;
   }
 
@@ -49,6 +53,13 @@ class _PlayerUIState extends State<PlayerUI> {
       return '$minutes:${seconds.toString().padLeft(2, '0')}';
     }
     return "0:00";
+  }
+
+  double getPercentageComplete(Duration? current, Duration? duration) {
+    if (duration != null && current != null) {
+      return (current.inSeconds / duration.inSeconds);
+    }
+    return 0;
   }
 
   @override
@@ -74,7 +85,7 @@ class _PlayerUIState extends State<PlayerUI> {
             children: [
               Slider(
                 onChanged: (double a) {},
-                value: 0,
+                value: percentageComplete,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
