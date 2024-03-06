@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
 import "dart:async";
+import "dart:ffi";
 
 import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
@@ -62,6 +63,15 @@ class _PlayerUIState extends State<PlayerUI> {
     return 0;
   }
 
+  int seekLocation(double value, Duration? duration)
+  {
+    if (duration != null)
+    {
+      return (value * duration.inSeconds).toInt();
+    }
+    return 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -84,7 +94,10 @@ class _PlayerUIState extends State<PlayerUI> {
           Column(
             children: [
               Slider(
-                onChanged: (double a) {},
+                onChanged: (double value) async {
+                  percentageComplete = value;
+                  await player.seek(Duration(seconds: seekLocation(value, duration)));
+                },
                 value: percentageComplete,
               ),
               Row(
