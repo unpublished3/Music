@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
 import "dart:async";
-import "dart:ffi";
 
 import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
