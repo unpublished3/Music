@@ -1,9 +1,21 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:path/path.dart';
 
 class ListUI extends StatelessWidget {
-  const ListUI({super.key});
+  // ListUI({super.key});
+  File file;
+
+  ListUI({super.key, required this.file});
+
+  String formatName(String name) {
+    if (name.length > 30) {
+      return '${name.substring(0, 30)}.....';
+    }
+    return name;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +41,12 @@ class ListUI extends StatelessWidget {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
                   child: Column(
-                    children: [Text("Music"), Text("Artist")],
+                    children: [
+                      Text(formatName(basename(file.path))),
+                      Text("Artist")
+                    ],
                   ),
                 )
               ],
