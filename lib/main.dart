@@ -1,18 +1,20 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
+import 'package:music/pages/music_list.dart';
 import 'package:music/pages/player.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:music/utils/find_music_directory.dart';
 // import 'package:music/pages/list.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   Future<bool> requestStoragePermission() async {
     final status = await Permission.storage.request();
@@ -21,6 +23,8 @@ class MyApp extends StatelessWidget {
     }
     return false;
   }
+
+  final mp3Files = findMp3Files();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class MyApp extends StatelessWidget {
                   } else {
                     // Permission granted or denied
                     if (snapshot.data == true) {
-                      return PlayerUI();
+                      return MusicList();
                     } else {
                       return Scaffold(
                           body: Center(child: Text('Permission denied')));
