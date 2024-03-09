@@ -38,6 +38,7 @@ dependencies:
   just_audio_mpv: ^0.1.7
   audioplayers: ^5.2.1
   audioplayers_linux: ^3.1.0
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:

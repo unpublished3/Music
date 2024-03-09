@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:music/utils/find_music_directory.dart';
+import 'package:path/path.dart';
 
 class MusicList extends StatefulWidget {
   MusicList({super.key});
@@ -30,6 +31,7 @@ class _MusicListState extends State<MusicList> {
   Widget build(BuildContext context) {
     return ListView.builder(
         itemCount: mp3Files.length,
-        itemBuilder: ((context, index) => Text(mp3Files[index].path)));
+        itemBuilder: ((context, index) =>
+            Text(basename(mp3Files[index].path))));
   }
 }
