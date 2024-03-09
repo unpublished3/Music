@@ -3,7 +3,8 @@
 import "dart:async";
 
 import "package:flutter/material.dart";
-import "package:just_audio/just_audio.dart";
+// import "package:just_audio/just_audio.dart";
+import "package:audioplayers/audioplayers.dart";
 
 class PlayerUI extends StatefulWidget {
   PlayerUI({super.key});
@@ -13,11 +14,12 @@ class PlayerUI extends StatefulWidget {
 }
 
 class _PlayerUIState extends State<PlayerUI> {
+  // final player = AudioPlayer();
   final player = AudioPlayer();
 
   // Application State
   bool _isPlaying = false;
-  Duration? current = Duration.zero, duration = Duration.zero;
+  Duration? current = Duration.zero, duration;
   double percentageComplete = 0;
 
   @override
@@ -25,24 +27,28 @@ class _PlayerUIState extends State<PlayerUI> {
     super.initState();
     setUrl();
 
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    player.onPositionChanged.listen((newPostion) {
       setState(() {
-        current = player.position;
+        current = newPostion;
         percentageComplete = getPercentageComplete(current, duration);
       });
+    });
+
+    player.onDurationChanged.listen((newDuration) {
+      duration = newDuration;
     });
   }
 
   void setUrl() async {
-    await player.setUrl('asset:///assets/File.mp3');
-    duration = player.duration;
+    // await player.setSourceUrl();
+    await player.setSourceAsset('File.mp3');
   }
 
   void playPause() async {
     if (_isPlaying) {
       await player.pause();
     } else {
-      await player.play();
+      await player.resume();
     }
   }
 
@@ -57,15 +63,17 @@ class _PlayerUIState extends State<PlayerUI> {
 
   double getPercentageComplete(Duration? current, Duration? duration) {
     if (duration != null && current != null) {
+      if (duration.inSeconds == 0) {
+        return 0;
+      }
+
       return (current.inSeconds / duration.inSeconds);
     }
     return 0;
   }
 
-  int seekLocation(double value, Duration? duration)
-  {
-    if (duration != null)
-    {
+  int seekLocation(double value, Duration? duration) {
+    if (duration != null) {
       return (value * duration.inSeconds).toInt();
     }
     return 0;
@@ -95,7 +103,8 @@ class _PlayerUIState extends State<PlayerUI> {
               Slider(
                 onChanged: (double value) async {
                   percentageComplete = value;
-                  await player.seek(Duration(seconds: seekLocation(value, duration)));
+                  await player
+                      .seek(Duration(seconds: seekLocation(value, duration)));
                 },
                 value: percentageComplete,
               ),
