@@ -15,60 +15,31 @@ class ListUI extends StatelessWidget {
         decoration: BoxDecoration(
             border: Border.all(color: Colors.black, width: 2),
             borderRadius: BorderRadius.circular(12)),
-        child: InnerUI(),
-      ),
-    );
-  }
-}
-
-class InnerUI extends StatelessWidget {
-  const InnerUI({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [Thumbnail(), Name()],
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.height * 0.07,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black, width: 2)),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                  child: Column(
+                    children: [Text("Music"), Text("Artist")],
+                  ),
+                )
+              ],
+            ),
+            Text("Length")
+          ],
         ),
-        Text("Length")
-      ],
-    );
-  }
-}
-
-class Name extends StatelessWidget {
-  const Name({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-      child: Column(
-        children: [Text("Music"), Text("Artist")],
       ),
-    );
-  }
-}
-
-class Thumbnail extends StatelessWidget {
-  const Thumbnail({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.height * 0.07,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black, width: 2)),
     );
   }
 }
