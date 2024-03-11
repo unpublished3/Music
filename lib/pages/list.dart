@@ -6,6 +6,8 @@ import 'package:music/utils/metadata.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 
+import "package:music/utils/format_data.dart" as formatter;
+
 class ListUI extends StatefulWidget {
   // ListUI({super.key});
   File file;
@@ -18,13 +20,6 @@ class ListUI extends StatefulWidget {
 
 class _ListUIState extends State<ListUI> {
   late Metadata audioMetadata;
-
-  String formatName(String name) {
-    if (name.length > 30) {
-      return '${name.substring(0, 30)}.....';
-    }
-    return name;
-  }
 
   @override
   void initState() {
@@ -39,10 +34,26 @@ class _ListUIState extends State<ListUI> {
   String get trackName {
     String? track = audioMetadata.trackName;
     if (track != null) {
-      return formatName(basenameWithoutExtension(track));
+      return formatter.formatName(basenameWithoutExtension(track), 30);
     }
 
-    return formatName(basenameWithoutExtension(widget.file.path));
+    return formatter.formatName(basenameWithoutExtension(widget.file.path), 30);
+  }
+
+  String get artistName {
+    List<String>? artists = audioMetadata.trackArtistNames;
+    String artistNames = "";
+    if (artists != null) {
+      for (int i = 0; i < artists.length; i++) {
+        if (i != 0) {
+          artistNames += ", ";
+        }
+        artistNames += artists[i];
+      }
+      return artistNames;
+    }
+
+    return "";
   }
 
   @override
@@ -83,7 +94,7 @@ class _ListUIState extends State<ListUI> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 0),
                         child: Column(
-                          children: [Text(trackName), Text("Artist")],
+                          children: [Text(trackName), Text(artistName)],
                         ),
                       )
                     ],

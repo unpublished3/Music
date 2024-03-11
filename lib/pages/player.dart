@@ -4,6 +4,8 @@ import "package:flutter/material.dart";
 // import "package:just_audio/just_audio.dart";
 import "package:audioplayers/audioplayers.dart";
 
+import "package:music/utils/format_data.dart" as formatter;
+
 class PlayerUI extends StatefulWidget {
   PlayerUI({super.key});
 
@@ -48,15 +50,6 @@ class _PlayerUIState extends State<PlayerUI> {
     } else {
       await player.resume();
     }
-  }
-
-  String formatDuration(Duration? duration) {
-    if (duration != null) {
-      final minutes = duration.inMinutes;
-      final seconds = duration.inSeconds % 60;
-      return '$minutes:${seconds.toString().padLeft(2, '0')}';
-    }
-    return "0:00";
   }
 
   double getPercentageComplete(Duration? current, Duration? duration) {
@@ -109,8 +102,8 @@ class _PlayerUIState extends State<PlayerUI> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(formatDuration(current)),
-                  Text(formatDuration(duration))
+                  Text(formatter.formatDuration(current)),
+                  Text(formatter.formatDuration(duration))
                 ],
               )
             ],
