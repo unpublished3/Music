@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 import 'package:music/utils/metadata.dart';
@@ -65,6 +67,15 @@ class _ListUIState extends State<ListUI> {
     return "0:00";
   }
 
+  Image get albumArt {
+    Uint8List? art = audioMetadata.albumArt;
+    if (art != null) {
+      return Image.memory(art);
+    }
+
+    return Image.asset("assets/image.jpg");
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
@@ -96,6 +107,8 @@ class _ListUIState extends State<ListUI> {
                       Container(
                         width: MediaQuery.of(context).size.height * 0.07,
                         decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: albumArt.image, fit: BoxFit.contain),
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: Colors.black, width: 2)),
                       ),
