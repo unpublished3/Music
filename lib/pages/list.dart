@@ -56,6 +56,15 @@ class _ListUIState extends State<ListUI> {
     return "";
   }
 
+  String get trackDuration {
+    int? duration = audioMetadata.trackDuration;
+    if (duration != null) {
+      return formatter.formatDuration(Duration(milliseconds: duration));
+    }
+
+    return "0:00";
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
@@ -99,7 +108,7 @@ class _ListUIState extends State<ListUI> {
                       )
                     ],
                   ),
-                  Text("Length")
+                  Text(trackDuration)
                 ],
               ),
             ),
