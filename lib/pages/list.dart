@@ -1,20 +1,40 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_media_metadata/flutter_media_metadata.dart';
+import 'package:music/utils/metadata.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 
-class ListUI extends StatelessWidget {
+class ListUI extends StatefulWidget {
   // ListUI({super.key});
   File file;
 
   ListUI({super.key, required this.file});
+
+  @override
+  State<ListUI> createState() => _ListUIState();
+}
+
+class _ListUIState extends State<ListUI> {
+  late Metadata audioMetadata;
 
   String formatName(String name) {
     if (name.length > 30) {
       return '${name.substring(0, 30)}.....';
     }
     return name;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setMetadata();
+  }
+
+  Future<void> setMetadata() async {
+    audioMetadata = await getMetadata(widget.file.path);
   }
 
   @override
@@ -44,7 +64,7 @@ class ListUI extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
                   child: Column(
                     children: [
-                      Text(formatName(basename(file.path))),
+                      Text(formatName(basename(widget.file.path))),
                       Text("Artist")
                     ],
                   ),
