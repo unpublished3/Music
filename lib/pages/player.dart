@@ -1,13 +1,14 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
 import "package:flutter/material.dart";
-// import "package:just_audio/just_audio.dart";
+import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
 
 import "package:music/utils/format_data.dart" as formatter;
 
 class PlayerUI extends StatefulWidget {
-  PlayerUI({super.key});
+  File file;
+  PlayerUI({super.key, required this.file});
 
   @override
   State<PlayerUI> createState() => _PlayerUIState();
@@ -40,8 +41,7 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void setUrl() async {
-    // await player.setSourceUrl();
-    await player.setSourceAsset('File.mp3');
+    await player.setSourceDeviceFile(widget.file.path);
   }
 
   void playPause() async {
