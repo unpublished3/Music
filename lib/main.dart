@@ -1,13 +1,11 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
+import 'package:music/pages/mobile_home.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
-import 'package:music/pages/music_list.dart';
-import 'package:music/pages/player.dart';
 import 'package:music/utils/find_music_directory.dart';
-// import 'package:music/pages/list.dart';
 
 void main() {
   runApp(MyApp());
@@ -45,7 +43,7 @@ class MyApp extends StatelessWidget {
                   } else {
                     // Permission granted or denied
                     if (snapshot.data == true) {
-                      return MusicList();
+                      return MobileHome();
                     } else {
                       return Scaffold(
                           body: Center(child: Text('Permission denied')));
