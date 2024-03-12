@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:music/pages/player.dart';
 
 class PlayerProvider extends ChangeNotifier {
-  PlayerUI? player;
+  PlayerUI _player =
+      PlayerUI(file: File.fromUri(Uri.file("/storage/emulated/0")));
+  PlayerUI get player => _player;
 
   void changePlayer({required PlayerUI newPlayer}) async {
-    player = newPlayer;
+    _player = newPlayer;
     notifyListeners();
   }
 }

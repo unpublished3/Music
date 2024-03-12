@@ -4,9 +4,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_media_metadata/flutter_media_metadata.dart';
+import 'package:music/pages/player.dart';
+import 'package:music/providers/player_provider.dart';
 import 'package:music/utils/metadata.dart';
 import 'dart:io';
 import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 
 import "package:music/utils/format_data.dart" as formatter;
 
@@ -76,6 +79,12 @@ class _ListUIState extends State<ListUI> {
     return Image.asset("assets/image.jpg");
   }
 
+  void setPlayer(context) {
+    PlayerProvider myProvider =
+        Provider.of<PlayerProvider>(context, listen: false);
+    myProvider.changePlayer(newPlayer: PlayerUI(file: widget.file));
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
@@ -89,7 +98,13 @@ class _ListUIState extends State<ListUI> {
           return Scaffold(body: Center(child: Text('Error occurred')));
         } else {
           // Permission granted or denied
-          return ListElement(albumArt: albumArt, trackName: trackName, artistName: artistName, trackDuration: trackDuration);
+          return GestureDetector(
+              onTap: () => {setPlayer(context)},
+              child: ListElement(
+                  albumArt: albumArt,
+                  trackName: trackName,
+                  artistName: artistName,
+                  trackDuration: trackDuration));
         }
       },
     );
@@ -113,8 +128,7 @@ class ListElement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.only(right: 20, left: 20, top: 15, bottom: 0),
+      padding: const EdgeInsets.only(right: 20, left: 20, top: 15, bottom: 0),
       child: Container(
         padding: EdgeInsets.all(12),
         height: MediaQuery.of(context).size.height * 0.1,
@@ -129,8 +143,8 @@ class ListElement extends StatelessWidget {
               children: [
                 AlbumArt(albumArt: albumArt),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 6, vertical: 0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
                   child: Column(
                     children: [Text(trackName), Text(artistName)],
                   ),
@@ -158,8 +172,7 @@ class AlbumArt extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.height * 0.07,
       decoration: BoxDecoration(
-          image: DecorationImage(
-              image: albumArt.image, fit: BoxFit.contain),
+          image: DecorationImage(image: albumArt.image, fit: BoxFit.contain),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.black, width: 2)),
     );
