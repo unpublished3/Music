@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:music/pages/music_list.dart';
-import 'package:music/pages/player.dart';
 
 class MobileHome extends StatefulWidget {
   const MobileHome({super.key});
@@ -10,7 +9,6 @@ class MobileHome extends StatefulWidget {
 }
 
 class _MobileHomeState extends State<MobileHome> {
-  PlayerUI? player;
 
   @override
   Widget build(BuildContext context) {
