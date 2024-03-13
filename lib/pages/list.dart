@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 import 'package:music/pages/player.dart';
+import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/utils/metadata.dart';
 import 'dart:io';
@@ -61,13 +62,13 @@ class _ListUIState extends State<ListUI> {
     return "";
   }
 
-  String get trackDuration {
+  Duration get trackDuration {
     int? duration = audioMetadata.trackDuration;
     if (duration != null) {
-      return formatter.formatDuration(Duration(milliseconds: duration));
+      return Duration(milliseconds: duration);
     }
 
-    return "0:00";
+    return Duration.zero;
   }
 
   Image get albumArt {
@@ -77,6 +78,15 @@ class _ListUIState extends State<ListUI> {
     }
 
     return Image.asset("assets/image.jpg");
+  }
+
+  void updateMetadataProvider(context) {
+    MetadataProvider myProvider =
+        Provider.of<MetadataProvider>(context, listen: false);
+    myProvider.addRequiredMetadata(newMetadataMap: {
+      widget.file.path:
+          RequiredMetadata(trackName, artistName, trackDuration, albumArt)
+    });
   }
 
   void setPlayer(context) {
@@ -99,12 +109,13 @@ class _ListUIState extends State<ListUI> {
         } else {
           // Permission granted or denied
           return GestureDetector(
-              onTap: () => {setPlayer(context)},
+              onTap: () =>
+                  {updateMetadataProvider(context), setPlayer(context)},
               child: ListElement(
                   albumArt: albumArt,
                   trackName: trackName,
                   artistName: artistName,
-                  trackDuration: trackDuration));
+                  trackDuration: formatter.formatDuration(trackDuration)));
         }
       },
     );
@@ -170,11 +181,10 @@ class AlbumArt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.height * 0.07,
-      decoration: BoxDecoration(
+        width: MediaQuery.of(context).size.height * 0.07,
+        decoration: BoxDecoration(
           image: DecorationImage(image: albumArt.image, fit: BoxFit.contain),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black, width: 2)),
-    );
+          borderRadius: BorderRadius.circular(100),
+        ));
   }
 }
