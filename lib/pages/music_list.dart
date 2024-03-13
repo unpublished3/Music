@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:music/pages/list.dart';
 
-import 'package:music/utils/find_music_directory.dart';
+import 'package:music/utils/find_music_files.dart';
 
 class MusicList extends StatefulWidget {
   MusicList({super.key});
