@@ -38,6 +38,8 @@ class _PlayerUIState extends State<PlayerUI> {
     player.onDurationChanged.listen((newDuration) {
       duration = newDuration;
     });
+
+    playPause();
   }
 
   void setUrl() async {
@@ -72,60 +74,64 @@ class _PlayerUIState extends State<PlayerUI> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 150),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Music Image
-          Container(
-            height: MediaQuery.of(context).size.height * 0.35,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.red,
-          ),
-
-          Column(
-            children: [Text("Name"), Text("Artist")],
-          ),
-
-          Column(
+    return MaterialApp(
+      home: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 150),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Slider(
-                onChanged: (double value) async {
-                  percentageComplete = value;
-                  await player
-                      .seek(Duration(seconds: seekLocation(value, duration)));
-                },
-                value: percentageComplete,
+              // Music Image
+              Container(
+                height: MediaQuery.of(context).size.height * 0.35,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.red,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+              Column(
+                children: [Text("Name"), Text("Artist")],
+              ),
+
+              Column(
                 children: [
-                  Text(formatter.formatDuration(current)),
-                  Text(formatter.formatDuration(duration))
+                  Slider(
+                    onChanged: (double value) async {
+                      percentageComplete = value;
+                      await player.seek(
+                          Duration(seconds: seekLocation(value, duration)));
+                    },
+                    value: percentageComplete,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(formatter.formatDuration(current)),
+                      Text(formatter.formatDuration(duration))
+                    ],
+                  )
+                ],
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(Icons.skip_previous),
+                  ElevatedButton(
+                    onPressed: () {
+                      playPause();
+                      setState(() {
+                        _isPlaying = !_isPlaying;
+                      });
+                    },
+                    child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                  ),
+                  Icon(Icons.skip_next)
                 ],
               )
             ],
           ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Icon(Icons.skip_previous),
-              ElevatedButton(
-                onPressed: () {
-                  playPause();
-                  setState(() {
-                    _isPlaying = !_isPlaying;
-                  });
-                },
-                child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-              ),
-              Icon(Icons.skip_next)
-            ],
-          )
-        ],
+        ),
       ),
     );
   }

@@ -90,9 +90,16 @@ class _ListUIState extends State<ListUI> {
   }
 
   void setPlayer(context) {
-    PlayerProvider myProvider =
-        Provider.of<PlayerProvider>(context, listen: false);
-    myProvider.changePlayer(newPlayer: PlayerUI(file: widget.file));
+    final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+    PlayerUI player = PlayerUI(file: widget.file);
+    playerProvider.changePlayer(newPlayer: player);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => player,
+      ),
+    );
   }
 
   @override

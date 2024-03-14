@@ -22,7 +22,7 @@ class _MobileHomeState extends State<MobileHome> {
                 onPressed: () {
                   print(value.player.file.path);
                 },
-                child: Icon(Icons.abc),
+                child: Icon(Icons.music_note),
               ),
             ));
   }
