@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:music/pages/music_list.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +16,6 @@ class _MobileHomeState extends State<MobileHome> {
   Widget build(BuildContext context) {
     return Consumer<PlayerProvider>(
         builder: (context, value, child) => Scaffold(
-              body: MusicList(),
               floatingActionButton: ElevatedButton(
                 onPressed: () {
                   print(value.player.file.path);

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
 
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -14,27 +15,19 @@ import 'package:provider/provider.dart';
 
 import "package:music/utils/format_data.dart" as formatter;
 
-class ListUI extends StatefulWidget {
-  // ListUI({super.key});
+class ListUI extends StatelessWidget {
   File file;
 
   ListUI({super.key, required this.file});
 
-  @override
-  State<ListUI> createState() => _ListUIState();
-}
-
-class _ListUIState extends State<ListUI> {
   late Metadata audioMetadata;
 
-  @override
-  void initState() {
-    super.initState();
-    setMetadata();
-  }
+  late RequiredMetadata requiredMetadata;
 
   Future<void> setMetadata() async {
-    audioMetadata = await getMetadata(widget.file.path);
+    audioMetadata = await getMetadata(file.path);
+    requiredMetadata =
+        RequiredMetadata(trackName, artistName, trackDuration, albumArt);
   }
 
   String get trackName {
@@ -43,7 +36,7 @@ class _ListUIState extends State<ListUI> {
       return formatter.formatName(basenameWithoutExtension(track), 30);
     }
 
-    return formatter.formatName(basenameWithoutExtension(widget.file.path), 30);
+    return formatter.formatName(basenameWithoutExtension(file.path), 30);
   }
 
   String get artistName {
@@ -84,15 +77,14 @@ class _ListUIState extends State<ListUI> {
     MetadataProvider myProvider =
         Provider.of<MetadataProvider>(context, listen: false);
     myProvider.addRequiredMetadata(newMetadataMap: {
-      widget.file.path:
+      file.path:
           RequiredMetadata(trackName, artistName, trackDuration, albumArt)
     });
   }
 
   void setPlayer(context) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-    PlayerUI player = PlayerUI(file: widget.file);
-    playerProvider.changePlayer(newPlayer: player);
+    PlayerUI player = PlayerUI(file: file);
 
     Navigator.push(
       context,
@@ -100,6 +92,7 @@ class _ListUIState extends State<ListUI> {
         builder: (context) => player,
       ),
     );
+    playerProvider.changePlayer(newPlayer: player);
   }
 
   @override
@@ -116,13 +109,13 @@ class _ListUIState extends State<ListUI> {
         } else {
           // Permission granted or denied
           return GestureDetector(
-              onTap: () =>
-                  {updateMetadataProvider(context), setPlayer(context)},
+              onTap: () => {setPlayer(context)},
               child: ListElement(
-                  albumArt: albumArt,
-                  trackName: trackName,
-                  artistName: artistName,
-                  trackDuration: formatter.formatDuration(trackDuration)));
+                  albumArt: requiredMetadata.albumArt,
+                  trackName: requiredMetadata.trackName,
+                  artistName: requiredMetadata.artistName,
+                  trackDuration: formatter
+                      .formatDuration(requiredMetadata.trackDuration)));
         }
       },
     );

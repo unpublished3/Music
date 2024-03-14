@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:music/pages/mobile_home.dart';
+import 'package:music/pages/music_list.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -51,7 +52,12 @@ class MyApp extends StatelessWidget {
                     } else {
                       // Permission granted or denied
                       if (snapshot.data == true) {
-                        return MobileHome();
+                        return Stack(
+                          children: [
+                            MusicList(),
+                            // Positioned(child: MobileHome())
+                          ],
+                        );
                       } else {
                         return Scaffold(
                             body: Center(child: Text('Permission denied')));
