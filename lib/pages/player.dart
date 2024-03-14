@@ -38,12 +38,14 @@ class _PlayerUIState extends State<PlayerUI> {
     player.onDurationChanged.listen((newDuration) {
       duration = newDuration;
     });
-
-    playPause();
   }
 
   void setUrl() async {
     await player.setSourceDeviceFile(widget.file.path);
+    playPause();
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
   }
 
   void playPause() async {
@@ -75,6 +77,7 @@ class _PlayerUIState extends State<PlayerUI> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 150),
