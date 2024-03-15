@@ -20,7 +20,12 @@ class _MobileHomeState extends State<MobileHome> {
               body: MusicList(),
               floatingActionButton: ElevatedButton(
                 onPressed: () {
-                  print(value.player.file.path);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => value.player,
+                    ),
+                  );
                 },
                 child: Icon(Icons.music_note),
               ),
