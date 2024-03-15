@@ -33,10 +33,10 @@ class ListUI extends StatelessWidget {
   String get trackName {
     String? track = audioMetadata.trackName;
     if (track != null) {
-      return formatter.formatName(basenameWithoutExtension(track), 30);
+      return basenameWithoutExtension(track);
     }
 
-    return formatter.formatName(basenameWithoutExtension(file.path), 30);
+    return basenameWithoutExtension(file.path);
   }
 
   String get artistName {
@@ -111,10 +111,12 @@ class ListUI extends StatelessWidget {
         } else {
           // Permission granted or denied
           return GestureDetector(
-              onTap: () => {updateMetadataProvider(context),setPlayer(context)},
+              onTap: () =>
+                  {updateMetadataProvider(context), setPlayer(context)},
               child: ListElement(
                   albumArt: requiredMetadata.albumArt,
-                  trackName: requiredMetadata.trackName,
+                  trackName: formatter.formatName(
+                      basenameWithoutExtension(requiredMetadata.trackName), 30),
                   artistName: requiredMetadata.artistName,
                   trackDuration: formatter
                       .formatDuration(requiredMetadata.trackDuration)));

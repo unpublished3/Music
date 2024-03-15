@@ -3,6 +3,7 @@
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
+import "package:flutter/widgets.dart";
 import "package:music/providers/metadata_provider.dart";
 
 import "package:music/utils/format_data.dart" as formatter;
@@ -22,7 +23,10 @@ class _PlayerUIState extends State<PlayerUI> {
 
   // Application State
   bool _isPlaying = false;
-  Duration? current = Duration.zero, duration;
+  Duration? current = Duration.zero;
+  late Duration duration;
+  late String trackName, artistName;
+  late Image albumArt;
   double percentageComplete = 0;
 
   @override
@@ -30,8 +34,15 @@ class _PlayerUIState extends State<PlayerUI> {
     super.initState();
     setUrl();
 
-    duration = Provider.of<MetadataProvider>(context, listen: false).metadataMap[widget.file.path]?.trackDuration;
-    print(duration);
+    RequiredMetadata? map =
+        Provider.of<MetadataProvider>(context, listen: false)
+            .metadataMap[widget.file.path];
+    if (map != null) {
+      artistName = map.artistName;
+      trackName = map.trackName;
+      albumArt = map.albumArt;
+      duration = map.trackDuration;
+    }
 
     widget.player.onPositionChanged.listen((newPostion) {
       setState(() {
@@ -90,11 +101,12 @@ class _PlayerUIState extends State<PlayerUI> {
               Container(
                 height: MediaQuery.of(context).size.height * 0.35,
                 width: MediaQuery.of(context).size.width,
-                color: Colors.red,
+                decoration: BoxDecoration(
+                    image: DecorationImage(image: albumArt.image)),
               ),
 
               Column(
-                children: [Text("Name"), Text("Artist")],
+                children: [Text(trackName), Text(artistName)],
               ),
 
               Column(
