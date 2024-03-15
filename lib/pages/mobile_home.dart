@@ -15,20 +15,19 @@ class MobileHome extends StatefulWidget {
 class _MobileHomeState extends State<MobileHome> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<PlayerProvider>(
-        builder: (context, value, child) => Scaffold(
-              body: MusicList(),
-              floatingActionButton: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => value.player,
-                    ),
-                  );
-                },
-                child: Icon(Icons.music_note),
-              ),
-            ));
+    return Scaffold(
+        body: MusicList(),
+        floatingActionButton: Consumer<PlayerProvider>(
+            builder: (context, value, child) => ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => value.player,
+                      ),
+                    );
+                  },
+                  child: Icon(Icons.music_note),
+                )));
   }
 }
