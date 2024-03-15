@@ -85,6 +85,8 @@ class ListUI extends StatelessWidget {
   void setPlayer(context) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
     PlayerUI player = PlayerUI(file: file);
+    PlayerUI currentPlayer = playerProvider.player;
+    currentPlayer.player.pause();
 
     Navigator.push(
       context,

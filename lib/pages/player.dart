@@ -8,6 +8,7 @@ import "package:music/utils/format_data.dart" as formatter;
 
 class PlayerUI extends StatefulWidget {
   File file;
+  final player = AudioPlayer();
   PlayerUI({super.key, required this.file});
 
   @override
@@ -16,7 +17,6 @@ class PlayerUI extends StatefulWidget {
 
 class _PlayerUIState extends State<PlayerUI> {
   // final player = AudioPlayer();
-  final player = AudioPlayer();
 
   // Application State
   bool _isPlaying = false;
@@ -28,20 +28,21 @@ class _PlayerUIState extends State<PlayerUI> {
     super.initState();
     setUrl();
 
-    player.onPositionChanged.listen((newPostion) {
+    widget.player.onPositionChanged.listen((newPostion) {
       setState(() {
         current = newPostion;
         percentageComplete = getPercentageComplete(current, duration);
       });
     });
+  
 
-    player.onDurationChanged.listen((newDuration) {
+    widget.player.onDurationChanged.listen((newDuration) {
       duration = newDuration;
     });
   }
 
   void setUrl() async {
-    await player.setSourceDeviceFile(widget.file.path);
+    await widget.player.setSourceDeviceFile(widget.file.path);
     playPause();
     setState(() {
       _isPlaying = !_isPlaying;
@@ -50,9 +51,9 @@ class _PlayerUIState extends State<PlayerUI> {
 
   void playPause() async {
     if (_isPlaying) {
-      await player.pause();
+      await widget.player.pause();
     } else {
-      await player.resume();
+      await widget.player.resume();
     }
   }
 
@@ -101,7 +102,7 @@ class _PlayerUIState extends State<PlayerUI> {
                   Slider(
                     onChanged: (double value) async {
                       percentageComplete = value;
-                      await player.seek(
+                      await widget.player.seek(
                           Duration(seconds: seekLocation(value, duration)));
                     },
                     value: percentageComplete,
