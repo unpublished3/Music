@@ -111,7 +111,7 @@ class ListUI extends StatelessWidget {
         } else {
           // Permission granted or denied
           return GestureDetector(
-              onTap: () => {setPlayer(context)},
+              onTap: () => {updateMetadataProvider(context),setPlayer(context)},
               child: ListElement(
                   albumArt: requiredMetadata.albumArt,
                   trackName: requiredMetadata.trackName,

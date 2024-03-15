@@ -3,8 +3,10 @@
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
+import "package:music/providers/metadata_provider.dart";
 
 import "package:music/utils/format_data.dart" as formatter;
+import "package:provider/provider.dart";
 
 class PlayerUI extends StatefulWidget {
   File file;
@@ -28,16 +30,14 @@ class _PlayerUIState extends State<PlayerUI> {
     super.initState();
     setUrl();
 
+    duration = Provider.of<MetadataProvider>(context, listen: false).metadataMap[widget.file.path]?.trackDuration;
+    print(duration);
+
     widget.player.onPositionChanged.listen((newPostion) {
       setState(() {
         current = newPostion;
         percentageComplete = getPercentageComplete(current, duration);
       });
-    });
-  
-
-    widget.player.onDurationChanged.listen((newDuration) {
-      duration = newDuration;
     });
   }
 
