@@ -115,8 +115,8 @@ class ListUI extends StatelessWidget {
                   {updateMetadataProvider(context), setPlayer(context)},
               child: ListElement(
                   albumArt: requiredMetadata.albumArt,
-                  trackName: formatter.formatName(
-                      basenameWithoutExtension(requiredMetadata.trackName), 30),
+                  trackName:
+                      formatter.formatName(requiredMetadata.trackName, 30),
                   artistName: requiredMetadata.artistName,
                   trackDuration: formatter
                       .formatDuration(requiredMetadata.trackDuration)));
