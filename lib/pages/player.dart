@@ -45,19 +45,23 @@ class _PlayerUIState extends State<PlayerUI> {
     }
 
     widget.player.onPositionChanged.listen((newPostion) {
-      setState(() {
-        current = newPostion;
-        percentageComplete = getPercentageComplete(current, duration);
-      });
+      if (mounted) {
+        setState(() {
+          current = newPostion;
+          percentageComplete = getPercentageComplete(current, duration);
+        });
+      }
     });
   }
 
   void setUrl() async {
     await widget.player.setSourceDeviceFile(widget.file.path);
     playPause();
-    setState(() {
-      _isPlaying = !_isPlaying;
-    });
+    if (mounted) {
+      setState(() {
+        _isPlaying = !_isPlaying;
+      });
+    }
   }
 
   void playPause() async {
@@ -136,9 +140,11 @@ class _PlayerUIState extends State<PlayerUI> {
                   ElevatedButton(
                     onPressed: () {
                       playPause();
-                      setState(() {
-                        _isPlaying = !_isPlaying;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          _isPlaying = !_isPlaying;
+                        });
+                      }
                     },
                     child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
                   ),
