@@ -55,15 +55,24 @@ class _FloatingImageState extends State<FloatingImage> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => widget.player,
-            ),
-          );
-        },
-        child: Icon(Icons.music_note));
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => widget.player,
+          ),
+        );
+      },
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,),
+        child: CircleAvatar(
+          backgroundImage: albumArt.image,
+        ),
+      ),
+    );
   }
 }
