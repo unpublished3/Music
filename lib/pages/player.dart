@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
@@ -136,7 +137,8 @@ class _PlayerUIState extends State<PlayerUI> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Icon(Icons.skip_previous),
+                  GestureDetector(
+                      onTap: () {}, child: Icon(Icons.skip_previous)),
                   ElevatedButton(
                     onPressed: () {
                       playPause();
@@ -148,7 +150,7 @@ class _PlayerUIState extends State<PlayerUI> {
                     },
                     child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
                   ),
-                  Icon(Icons.skip_next)
+                  GestureDetector(onTap: () {}, child: Icon(Icons.skip_next))
                 ],
               )
             ],
