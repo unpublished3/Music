@@ -5,6 +5,7 @@ import 'package:music/pages/music_list.dart';
 import 'package:music/pages/player.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class MobileHome extends StatefulWidget {
@@ -58,11 +59,9 @@ class _FloatingImageState extends State<FloatingImage> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => widget.player,
-          ),
-        );
+            context,
+            PageTransition(
+                child: widget.player, type: PageTransitionType.bottomToTop));
       },
       child: Container(
         height: 50,

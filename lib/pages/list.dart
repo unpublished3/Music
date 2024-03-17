@@ -9,6 +9,7 @@ import 'package:music/pages/player.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/utils/metadata.dart';
+import 'package:page_transition/page_transition.dart';
 import 'dart:io';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
@@ -88,12 +89,8 @@ class ListUI extends StatelessWidget {
     PlayerUI currentPlayer = playerProvider.player;
     currentPlayer.player.pause();
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => player,
-      ),
-    );
+    Navigator.push(context,
+        PageTransition(child: player, type: PageTransitionType.bottomToTop));
     playerProvider.changePlayer(newPlayer: player);
   }
 
