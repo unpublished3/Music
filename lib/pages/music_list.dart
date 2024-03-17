@@ -1,37 +1,46 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:music/pages/list.dart';
+import 'package:music/providers/files_provider.dart';
 
 import 'package:music/utils/find_music_files.dart';
+import 'package:provider/provider.dart';
 
-class MusicList extends StatefulWidget {
+class MusicList extends StatelessWidget {
   MusicList({super.key});
 
-  @override
-  State<MusicList> createState() => _MusicListState();
-}
-
-class _MusicListState extends State<MusicList> {
-  List mp3Files = [];
-
-  @override
-  void initState() {
-    super.initState();
-    updateMp3();
-  }
-
-  Future<void> updateMp3() async {
-    List files = await findMp3Files();
-    setState(() {
-      mp3Files = files;
-    });
+  Future<void> updateMusicFiles(context) async {
+    List<File> files = await findMp3Files();
+    FilesProvider filesProvider =
+        Provider.of<FilesProvider>(context, listen: false);
+    filesProvider.addFiles(files);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: mp3Files.length,
-        itemBuilder: ((context, index) => ListUI(file: mp3Files[index])));
+    FilesProvider filesProvider =
+        Provider.of<FilesProvider>(context, listen: false);
+    List<File> musicFiles = filesProvider.musicFiles;
+
+    return FutureBuilder<void>(
+      future: updateMusicFiles(context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show a loading indicator while waiting for permission result
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // Handle any errors
+          return Scaffold(body: Center(child: Text('Error occurred')));
+        } else {
+          return ListView.builder(
+              itemCount: musicFiles.length,
+              itemBuilder: ((context, index) =>
+                  ListUI(file: musicFiles[index])));
+        }
+      },
+    );
   }
 }

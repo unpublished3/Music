@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:music/pages/mobile_home.dart';
+import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => PlayerProvider()),
-        ChangeNotifierProvider(create: (context) => MetadataProvider())
+        ChangeNotifierProvider(create: (context) => MetadataProvider()),
+        ChangeNotifierProvider(create: (context) => FilesProvider())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
