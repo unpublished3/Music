@@ -44,17 +44,17 @@ class _FloatingImageState extends State<FloatingImage> {
   @override
   void initState() {
     super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     RequiredMetadata? map =
         Provider.of<MetadataProvider>(context, listen: false)
             .metadataMap[widget.player.file.path];
     if (map != null) {
       albumArt = map.albumArt;
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -68,7 +68,8 @@ class _FloatingImageState extends State<FloatingImage> {
         height: 50,
         width: 50,
         decoration: BoxDecoration(
-            shape: BoxShape.circle,),
+          shape: BoxShape.circle,
+        ),
         child: CircleAvatar(
           backgroundImage: albumArt.image,
         ),

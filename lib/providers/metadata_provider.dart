@@ -26,5 +26,6 @@ class MetadataProvider extends ChangeNotifier {
         Map.unmodifiable({..._metadataMap, ...newMetadataMap});
 
     _metadataMap = updatedMap;
+    notifyListeners();
   }
 }
