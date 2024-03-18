@@ -25,10 +25,11 @@ class ListUI extends StatelessWidget {
 
   late RequiredMetadata requiredMetadata;
 
-  Future<void> setMetadata() async {
+  Future<void> setMetadata(context) async {
     audioMetadata = await getMetadata(file.path);
     requiredMetadata =
         RequiredMetadata(trackName, artistName, trackDuration, albumArt);
+    updateMetadataProvider(context);
   }
 
   String get trackName {
@@ -97,7 +98,7 @@ class ListUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-      future: setMetadata(),
+      future: setMetadata(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for permission result
@@ -109,7 +110,7 @@ class ListUI extends StatelessWidget {
           // Permission granted or denied
           return GestureDetector(
               onTap: () =>
-                  {updateMetadataProvider(context), setPlayer(context)},
+                  {setPlayer(context)},
               child: ListElement(
                   albumArt: requiredMetadata.albumArt,
                   trackName:

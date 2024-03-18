@@ -1,13 +1,14 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
-import "package:flutter/widgets.dart";
+import "package:music/providers/files_provider.dart";
 import "package:music/providers/metadata_provider.dart";
+import "package:music/providers/player_provider.dart";
 
 import "package:music/utils/format_data.dart" as formatter;
+import "package:page_transition/page_transition.dart";
 import "package:provider/provider.dart";
 
 class PlayerUI extends StatefulWidget {
@@ -20,8 +21,6 @@ class PlayerUI extends StatefulWidget {
 }
 
 class _PlayerUIState extends State<PlayerUI> {
-  // final player = AudioPlayer();
-
   // Application State
   bool _isPlaying = false;
   Duration? current = Duration.zero;
@@ -91,6 +90,31 @@ class _PlayerUIState extends State<PlayerUI> {
     return 0;
   }
 
+  void skipNext(context) {
+    List<File> musicFiles =
+        Provider.of<FilesProvider>(context, listen: false).musicFiles;
+    int index = musicFiles.indexOf(widget.file);
+    nagivateToNewMusic(context, musicFiles[++index]);
+  }
+
+  void skipPrevious() {
+    List<File> musicFiles =
+        Provider.of<FilesProvider>(context, listen: false).musicFiles;
+    int index = musicFiles.indexOf(widget.file);
+    nagivateToNewMusic(context, musicFiles[--index]);
+  }
+
+  void nagivateToNewMusic(context, File music) {
+    final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+    PlayerUI player = PlayerUI(file: music);
+    PlayerUI currentPlayer = playerProvider.player;
+    currentPlayer.player.pause();
+
+    Navigator.push(context,
+        PageTransition(child: player, type: PageTransitionType.bottomToTop));
+    playerProvider.changePlayer(newPlayer: player);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -138,7 +162,7 @@ class _PlayerUIState extends State<PlayerUI> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   GestureDetector(
-                      onTap: () {}, child: Icon(Icons.skip_previous)),
+                      onTap: () => {skipPrevious()}, child: Icon(Icons.skip_previous)),
                   ElevatedButton(
                     onPressed: () {
                       playPause();
@@ -150,7 +174,9 @@ class _PlayerUIState extends State<PlayerUI> {
                     },
                     child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
                   ),
-                  GestureDetector(onTap: () {}, child: Icon(Icons.skip_next))
+                  GestureDetector(
+                      onTap: () => {skipNext(context)},
+                      child: Icon(Icons.skip_next))
                 ],
               )
             ],
