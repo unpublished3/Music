@@ -3,6 +3,7 @@
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
+import "package:flutter/widgets.dart";
 import "package:music/providers/files_provider.dart";
 import "package:music/providers/metadata_provider.dart";
 import "package:music/providers/player_provider.dart";
@@ -94,17 +95,29 @@ class _PlayerUIState extends State<PlayerUI> {
     List<File> musicFiles =
         Provider.of<FilesProvider>(context, listen: false).musicFiles;
     int index = musicFiles.indexOf(widget.file);
-    nagivateToNewMusic(context, musicFiles[++index], 0);
+    if (index == musicFiles.length) {
+      index = -1;
+    }
+
+    int nextMusicIndex = (index + 1) % musicFiles.length;
+    File nextMusicFile = musicFiles[nextMusicIndex];
+
+    nagivateToNewPlayer(context, nextMusicFile, 0);
   }
 
   void skipPrevious() {
     List<File> musicFiles =
         Provider.of<FilesProvider>(context, listen: false).musicFiles;
     int index = musicFiles.indexOf(widget.file);
-    nagivateToNewMusic(context, musicFiles[--index], 1);
+
+    int previousMusicIndex =
+        (index - 1 + musicFiles.length) % musicFiles.length;
+    File previousMusicFile = musicFiles[previousMusicIndex];
+
+    nagivateToNewPlayer(context, previousMusicFile, 1);
   }
 
-  void nagivateToNewMusic(context, File music, int direction) {
+  void nagivateToNewPlayer(context, File music, int direction) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
     PlayerUI player = PlayerUI(file: music);
     PlayerUI currentPlayer = playerProvider.player;
