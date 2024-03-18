@@ -115,7 +115,7 @@ class _PlayerUIState extends State<PlayerUI> {
     playerProvider.changePlayer(newPlayer: player);
   }
 
-  void nagivateToHuome() {
+  void nagivateToHome() {
     Navigator.popUntil(context, ModalRoute.withName("/home"));
   }
 
@@ -128,7 +128,7 @@ class _PlayerUIState extends State<PlayerUI> {
           leading: Padding(
             padding: EdgeInsets.only(left: 25),
             child: GestureDetector(
-              onTap: () => {nagivateToHuome()},
+              onTap: () => {nagivateToHome()},
               child: Icon(
                 Icons.keyboard_arrow_down_sharp,
                 size: 40,
