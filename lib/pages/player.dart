@@ -94,24 +94,29 @@ class _PlayerUIState extends State<PlayerUI> {
     List<File> musicFiles =
         Provider.of<FilesProvider>(context, listen: false).musicFiles;
     int index = musicFiles.indexOf(widget.file);
-    nagivateToNewMusic(context, musicFiles[++index]);
+    nagivateToNewMusic(context, musicFiles[++index], 0);
   }
 
   void skipPrevious() {
     List<File> musicFiles =
         Provider.of<FilesProvider>(context, listen: false).musicFiles;
     int index = musicFiles.indexOf(widget.file);
-    nagivateToNewMusic(context, musicFiles[--index]);
+    nagivateToNewMusic(context, musicFiles[--index], 1);
   }
 
-  void nagivateToNewMusic(context, File music) {
+  void nagivateToNewMusic(context, File music, int direction) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
     PlayerUI player = PlayerUI(file: music);
     PlayerUI currentPlayer = playerProvider.player;
     currentPlayer.player.pause();
 
-    Navigator.push(context,
-        PageTransition(child: player, type: PageTransitionType.bottomToTop));
+    Navigator.push(
+        context,
+        PageTransition(
+            child: player,
+            type: direction == 1
+                ? PageTransitionType.leftToRightWithFade
+                : PageTransitionType.rightToLeftWithFade));
     playerProvider.changePlayer(newPlayer: player);
   }
 
