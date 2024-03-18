@@ -121,83 +121,91 @@ class _PlayerUIState extends State<PlayerUI> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          leading: Padding(
-            padding: EdgeInsets.only(left: 25),
-            child: GestureDetector(
-              onTap: () => {nagivateToHome()},
-              child: Icon(
-                Icons.keyboard_arrow_down_sharp,
-                size: 40,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (!didPop) {
+          nagivateToHome();
+        }
+      },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          appBar: AppBar(
+            leading: Padding(
+              padding: EdgeInsets.only(left: 25),
+              child: GestureDetector(
+                onTap: () => {nagivateToHome()},
+                child: Icon(
+                  Icons.keyboard_arrow_down_sharp,
+                  size: 40,
+                ),
               ),
             ),
           ),
-        ),
-        body: Padding(
-          padding:
-              const EdgeInsets.only(left: 50, right: 50, top: 50, bottom: 180),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Music Image
-              Container(
-                height: MediaQuery.of(context).size.height * 0.35,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    image: DecorationImage(image: albumArt.image)),
-              ),
+          body: Padding(
+            padding: const EdgeInsets.only(
+                left: 50, right: 50, top: 50, bottom: 180),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Music Image
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(image: albumArt.image)),
+                ),
 
-              Column(
-                children: [Text(trackName), Text(artistName)],
-              ),
+                Column(
+                  children: [Text(trackName), Text(artistName)],
+                ),
 
-              Column(
-                children: [
-                  Slider(
-                    onChanged: (double value) async {
-                      percentageComplete = value;
-                      await widget.player.seek(
-                          Duration(seconds: seekLocation(value, duration)));
-                    },
-                    value: percentageComplete,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(formatter.formatDuration(current)),
-                      Text(formatter.formatDuration(duration))
-                    ],
-                  )
-                ],
-              ),
+                Column(
+                  children: [
+                    Slider(
+                      onChanged: (double value) async {
+                        percentageComplete = value;
+                        await widget.player.seek(
+                            Duration(seconds: seekLocation(value, duration)));
+                      },
+                      value: percentageComplete,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(formatter.formatDuration(current)),
+                        Text(formatter.formatDuration(duration))
+                      ],
+                    )
+                  ],
+                ),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                      onTap: () => {skipPrevious()},
-                      child: Icon(Icons.skip_previous)),
-                  ElevatedButton(
-                    onPressed: () {
-                      playPause();
-                      if (mounted) {
-                        setState(() {
-                          _isPlaying = !_isPlaying;
-                        });
-                      }
-                    },
-                    child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-                  ),
-                  GestureDetector(
-                      onTap: () => {skipNext(context)},
-                      child: Icon(Icons.skip_next))
-                ],
-              )
-            ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                        onTap: () => {skipPrevious()},
+                        child: Icon(Icons.skip_previous)),
+                    ElevatedButton(
+                      onPressed: () {
+                        playPause();
+                        if (mounted) {
+                          setState(() {
+                            _isPlaying = !_isPlaying;
+                          });
+                        }
+                      },
+                      child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                    ),
+                    GestureDetector(
+                        onTap: () => {skipNext(context)},
+                        child: Icon(Icons.skip_next))
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
