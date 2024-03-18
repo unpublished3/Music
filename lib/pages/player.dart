@@ -53,6 +53,10 @@ class _PlayerUIState extends State<PlayerUI> {
         });
       }
     });
+
+    widget.player.onPlayerComplete.listen((event) {
+      skipNext(context);
+    });
   }
 
   void setUrl() async {
