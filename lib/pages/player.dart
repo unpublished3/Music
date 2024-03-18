@@ -115,15 +115,32 @@ class _PlayerUIState extends State<PlayerUI> {
     playerProvider.changePlayer(newPlayer: player);
   }
 
+  void nagivateToHuome() {
+    Navigator.popUntil(context, ModalRoute.withName("/home"));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        appBar: AppBar(
+          leading: Padding(
+            padding: EdgeInsets.only(left: 25),
+            child: GestureDetector(
+              onTap: () => {nagivateToHuome()},
+              child: Icon(
+                Icons.keyboard_arrow_down_sharp,
+                size: 40,
+              ),
+            ),
+          ),
+        ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 150),
+          padding:
+              const EdgeInsets.only(left: 50, right: 50, top: 50, bottom: 180),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Music Image
@@ -162,7 +179,8 @@ class _PlayerUIState extends State<PlayerUI> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   GestureDetector(
-                      onTap: () => {skipPrevious()}, child: Icon(Icons.skip_previous)),
+                      onTap: () => {skipPrevious()},
+                      child: Icon(Icons.skip_previous)),
                   ElevatedButton(
                     onPressed: () {
                       playPause();

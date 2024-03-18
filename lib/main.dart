@@ -37,6 +37,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => FilesProvider())
       ],
       child: MaterialApp(
+        initialRoute: "/home",
+        routes: {"/home":(context) => MobileHome()},
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Platform.isAndroid
