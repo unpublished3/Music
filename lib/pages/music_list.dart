@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:music/pages/list.dart';
 import 'package:music/providers/files_provider.dart';
@@ -45,15 +46,17 @@ class MusicList extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for permission result
-          return CircularProgressIndicator();
+          return Scaffold();
         } else if (snapshot.hasError) {
           // Handle any errors
           return Scaffold(body: Center(child: Text('Error occurred')));
         } else {
-          return ListView.builder(
-              itemCount: musicFiles.length,
-              itemBuilder: ((context, index) =>
-                  ListUI(file: musicFiles[index])));
+          return CupertinoScrollbar(
+            child: ListView.builder(
+                itemCount: musicFiles.length,
+                itemBuilder: ((context, index) =>
+                    ListUI(file: musicFiles[index]))),
+          );
         }
       },
     );
