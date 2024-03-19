@@ -5,8 +5,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:music/pages/list.dart';
 import 'package:music/providers/files_provider.dart';
+import 'package:music/providers/metadata_provider.dart';
 
 import 'package:music/utils/find_music_files.dart';
+import 'package:music/utils/metadata.dart';
 import 'package:provider/provider.dart';
 
 class MusicList extends StatelessWidget {
@@ -18,10 +20,19 @@ class MusicList extends StatelessWidget {
         Provider.of<FilesProvider>(context, listen: false);
     filesProvider.addFiles(files);
 
-    
+    for (File file in files) {
+      await setMetadata(context, file);
+    }
   }
 
+  Future<void> setMetadata(context, File file) async {
+    RequiredMetadata requiredMetadata = await getMetadata(file.path);
 
+    MetadataProvider myProvider =
+        Provider.of<MetadataProvider>(context, listen: false);
+    myProvider
+        .addRequiredMetadata(newMetadataMap: {file.path: requiredMetadata});
+  }
 
   @override
   Widget build(BuildContext context) {

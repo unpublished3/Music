@@ -3,11 +3,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_media_metadata/flutter_media_metadata.dart';
 import 'package:music/pages/player.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';
-import 'package:music/utils/metadata.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
@@ -19,20 +17,15 @@ class ListUI extends StatelessWidget {
 
   ListUI({super.key, required this.file});
 
-  late Metadata audioMetadata;
-
   late RequiredMetadata requiredMetadata;
 
-  Future<void> setMetadata(context) async {
-    requiredMetadata = await getMetadata(file.path);
-    updateMetadataProvider(context);
-  }
-
-  void updateMetadataProvider(context) {
-    MetadataProvider myProvider =
-        Provider.of<MetadataProvider>(context, listen: false);
-    myProvider
-        .addRequiredMetadata(newMetadataMap: {file.path: requiredMetadata});
+  Future<void> getMetadata(context) async {
+    RequiredMetadata? map =
+        Provider.of<MetadataProvider>(context, listen: false)
+            .metadataMap[file.path];
+    if (map != null) {
+      requiredMetadata = map;
+    }
   }
 
   void setPlayer(context) {
@@ -49,7 +42,7 @@ class ListUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-      future: setMetadata(context),
+      future: getMetadata(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Show a loading indicator while waiting for permission result
