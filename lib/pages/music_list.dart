@@ -17,7 +17,11 @@ class MusicList extends StatelessWidget {
     FilesProvider filesProvider =
         Provider.of<FilesProvider>(context, listen: false);
     filesProvider.addFiles(files);
+
+    
   }
+
+
 
   @override
   Widget build(BuildContext context) {

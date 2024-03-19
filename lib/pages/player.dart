@@ -3,7 +3,6 @@
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
-import "package:flutter/widgets.dart";
 import "package:music/providers/files_provider.dart";
 import "package:music/providers/metadata_provider.dart";
 import "package:music/providers/player_provider.dart";

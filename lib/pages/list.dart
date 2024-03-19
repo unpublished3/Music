@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable
 
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_media_metadata/flutter_media_metadata.dart';
@@ -11,7 +10,6 @@ import 'package:music/providers/player_provider.dart';
 import 'package:music/utils/metadata.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dart:io';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 import "package:music/utils/format_data.dart" as formatter;
@@ -26,62 +24,15 @@ class ListUI extends StatelessWidget {
   late RequiredMetadata requiredMetadata;
 
   Future<void> setMetadata(context) async {
-    audioMetadata = await getMetadata(file.path);
-    requiredMetadata =
-        RequiredMetadata(trackName, artistName, trackDuration, albumArt);
+    requiredMetadata = await getMetadata(file.path);
     updateMetadataProvider(context);
-  }
-
-  String get trackName {
-    String? track = audioMetadata.trackName;
-    if (track != null) {
-      return basenameWithoutExtension(track);
-    }
-
-    return basenameWithoutExtension(file.path);
-  }
-
-  String get artistName {
-    List<String>? artists = audioMetadata.trackArtistNames;
-    String artistNames = "";
-    if (artists != null) {
-      for (int i = 0; i < artists.length; i++) {
-        if (i != 0) {
-          artistNames += ", ";
-        }
-        artistNames += artists[i];
-      }
-      return artistNames;
-    }
-
-    return "";
-  }
-
-  Duration get trackDuration {
-    int? duration = audioMetadata.trackDuration;
-    if (duration != null) {
-      return Duration(milliseconds: duration);
-    }
-
-    return Duration.zero;
-  }
-
-  Image get albumArt {
-    Uint8List? art = audioMetadata.albumArt;
-    if (art != null) {
-      return Image.memory(art);
-    }
-
-    return Image.asset("assets/image.jpg");
   }
 
   void updateMetadataProvider(context) {
     MetadataProvider myProvider =
         Provider.of<MetadataProvider>(context, listen: false);
-    myProvider.addRequiredMetadata(newMetadataMap: {
-      file.path:
-          RequiredMetadata(trackName, artistName, trackDuration, albumArt)
-    });
+    myProvider
+        .addRequiredMetadata(newMetadataMap: {file.path: requiredMetadata});
   }
 
   void setPlayer(context) {
@@ -109,8 +60,7 @@ class ListUI extends StatelessWidget {
         } else {
           // Permission granted or denied
           return GestureDetector(
-              onTap: () =>
-                  {setPlayer(context)},
+              onTap: () => {setPlayer(context)},
               child: ListElement(
                   albumArt: requiredMetadata.albumArt,
                   trackName:
