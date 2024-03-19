@@ -16,23 +16,42 @@ class MusicList extends StatelessWidget {
   MusicList({super.key});
 
   Future<void> updateMusicFiles(context) async {
-    List<File> files = await findMp3Files();
     FilesProvider filesProvider =
         Provider.of<FilesProvider>(context, listen: false);
-    filesProvider.addFiles(files);
+    MetadataProvider metadataProvider =
+        Provider.of<MetadataProvider>(context, listen: false);
+
+    List<File> files = await findMp3Files();
 
     for (File file in files) {
-      await setMetadata(context, file);
+      await setMetadata(context, file, metadataProvider);
     }
+
+    files = sortByName(context, metadataProvider, files);
+
+    filesProvider.addFiles(files);
   }
 
-  Future<void> setMetadata(context, File file) async {
+  Future<void> setMetadata(
+      context, File file, MetadataProvider myProvider) async {
     RequiredMetadata requiredMetadata = await getMetadata(file.path);
 
-    MetadataProvider myProvider =
-        Provider.of<MetadataProvider>(context, listen: false);
     myProvider
         .addRequiredMetadata(newMetadataMap: {file.path: requiredMetadata});
+  }
+
+  List<File> sortByName(
+      context, MetadataProvider provider, List<File> musicFiles) {
+    musicFiles.sort((fileA, fileB) {
+      final nameA = provider.metadataMap[fileA.path]?.trackName;
+      final nameB = provider.metadataMap[fileB.path]?.trackName;
+      if (nameA != null && nameB != null) {
+        return nameA.compareTo(nameB);
+      }
+      return -1;
+    });
+
+    return musicFiles;
   }
 
   @override
