@@ -3,7 +3,6 @@
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
-import "package:music/providers/files_provider.dart";
 import "package:music/providers/metadata_provider.dart";
 import "package:music/providers/player_provider.dart";
 import "package:music/providers/playlist_provider.dart";
@@ -141,6 +140,11 @@ class _PlayerUIState extends State<PlayerUI> {
     Navigator.popUntil(context, ModalRoute.withName("/home"));
   }
 
+  void handleShuffle(context) {
+    PlaylistProvider playlistProvider = Provider.of<PlaylistProvider>(context, listen: false);
+    playlistProvider.shuffle();
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -207,6 +211,8 @@ class _PlayerUIState extends State<PlayerUI> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    GestureDetector(onTap: () => {handleShuffle(context)},child: Icon(Icons.shuffle),),
+
                     GestureDetector(
                         onTap: () => {skipPrevious()},
                         child: Icon(Icons.skip_previous)),

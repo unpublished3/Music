@@ -17,15 +17,14 @@ class PlaylistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void unshuffle() {
-    _mode = false;
-    notifyListeners();
-  }
-
   void shuffle() {
-    final random = Random();
-    _playlist.shuffle(random);
-    _mode = true;
+    if (_mode == false) {
+      final random = Random();
+      _playlist.shuffle(random);
+      _mode = true;
+    } else {
+      _mode = false;
+    }
     notifyListeners();
   }
 }
