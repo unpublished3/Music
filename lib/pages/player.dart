@@ -6,6 +6,7 @@ import "package:audioplayers/audioplayers.dart";
 import "package:music/providers/files_provider.dart";
 import "package:music/providers/metadata_provider.dart";
 import "package:music/providers/player_provider.dart";
+import "package:music/providers/playlist_provider.dart";
 
 import "package:music/utils/format_data.dart" as formatter;
 import "package:page_transition/page_transition.dart";
@@ -96,7 +97,7 @@ class _PlayerUIState extends State<PlayerUI> {
 
   void skipNext(context) {
     List<File> musicFiles =
-        Provider.of<FilesProvider>(context, listen: false).musicFiles;
+        Provider.of<PlaylistProvider>(context, listen: false).playlist;
     int index = musicFiles.indexOf(widget.file);
     if (index == musicFiles.length) {
       index = -1;
@@ -110,7 +111,7 @@ class _PlayerUIState extends State<PlayerUI> {
 
   void skipPrevious() {
     List<File> musicFiles =
-        Provider.of<FilesProvider>(context, listen: false).musicFiles;
+        Provider.of<PlaylistProvider>(context, listen: false).playlist;
     int index = musicFiles.indexOf(widget.file);
 
     int previousMusicIndex =
