@@ -8,7 +8,8 @@ class PlaylistProvider extends ChangeNotifier {
   final List<File> _shuffledPlaylist = [];
   bool _mode = false;
 
-  List<File> get playlist => !_mode? _playlist: _shuffledPlaylist;
+  List<File> get playlist =>
+      !_mode ? _playlist.toList() : _shuffledPlaylist.toList();
 
   void addFiles(List<File> files) {
     _playlist.addAll(files);
@@ -18,11 +19,13 @@ class PlaylistProvider extends ChangeNotifier {
 
   void unshuffle() {
     _mode = false;
+    notifyListeners();
   }
 
   void shuffle() {
     final random = Random();
     _playlist.shuffle(random);
     _mode = true;
+    notifyListeners();
   }
 }
