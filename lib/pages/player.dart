@@ -29,6 +29,7 @@ class _PlayerUIState extends State<PlayerUI> {
   late String trackName, artistName;
   late Image albumArt;
   double percentageComplete = 0;
+  bool repeat = false;
 
   @override
   void initState() {
@@ -55,7 +56,7 @@ class _PlayerUIState extends State<PlayerUI> {
     });
 
     widget.player.onPlayerComplete.listen((event) {
-      skipNext(context);
+        skipNext(context);
     });
   }
 
@@ -249,7 +250,16 @@ class _PlayerUIState extends State<PlayerUI> {
                     ),
                     GestureDetector(
                         onTap: () => {skipNext(context)},
-                        child: Icon(Icons.skip_next))
+                        child: Icon(Icons.skip_next)),
+                    GestureDetector(
+                      onTap: () => setState(() {
+                        repeat = !repeat;
+                      }),
+                      child: Icon(
+                        Icons.repeat_rounded,
+                        color: !repeat ? Colors.black : Colors.purple[600],
+                      ),
+                    )
                   ],
                 )
               ],
