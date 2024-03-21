@@ -141,12 +141,15 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void handleShuffle(context) {
-    PlaylistProvider playlistProvider = Provider.of<PlaylistProvider>(context, listen: false);
+    PlaylistProvider playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
     playlistProvider.shuffle();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool mode = Provider.of<PlaylistProvider>(context, listen: false).mode;
+
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
@@ -211,8 +214,13 @@ class _PlayerUIState extends State<PlayerUI> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    GestureDetector(onTap: () => {handleShuffle(context)},child: Icon(Icons.shuffle),),
-
+                    GestureDetector(
+                      onTap: () => {handleShuffle(context)},
+                      child: Icon(
+                        Icons.shuffle,
+                        color: !mode ? Colors.black : Colors.purple[600],
+                      ),
+                    ),
                     GestureDetector(
                         onTap: () => {skipPrevious()},
                         child: Icon(Icons.skip_previous)),
