@@ -3,6 +3,7 @@
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
+import "package:flutter/widgets.dart";
 import "package:music/providers/metadata_provider.dart";
 import "package:music/providers/player_provider.dart";
 import "package:music/providers/playlist_provider.dart";
@@ -180,11 +181,22 @@ class _PlayerUIState extends State<PlayerUI> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Music Image
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.35,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(image: albumArt.image)),
+                GestureDetector(
+                  onPanUpdate: (details) {
+                    if (details.delta.dx.abs() > details.delta.dy.abs()) {
+                      if (details.delta.dx < 0) {
+                        skipNext(context);
+                      } else if (details.delta.dx > 0) {
+                        skipPrevious();
+                      }
+                    }
+                  },
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(image: albumArt.image)),
+                  ),
                 ),
 
                 Column(
