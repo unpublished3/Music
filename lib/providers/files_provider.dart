@@ -6,7 +6,9 @@ class FilesProvider extends ChangeNotifier {
   List<File> musicFiles = [];
 
   void addFiles(List<File> files) {
-    musicFiles.addAll(files);
+    if (musicFiles.length != files.length) {
+      musicFiles.addAll(files);
+    }
     notifyListeners();
   }
 

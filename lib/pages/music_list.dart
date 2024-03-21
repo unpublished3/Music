@@ -21,7 +21,8 @@ class MusicList extends StatelessWidget {
         Provider.of<FilesProvider>(context, listen: false);
     MetadataProvider metadataProvider =
         Provider.of<MetadataProvider>(context, listen: false);
-    PlaylistProvider playlistProvider = Provider.of<PlaylistProvider>(context, listen: false);
+    PlaylistProvider playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
 
     List<File> files = await findMp3Files();
 
