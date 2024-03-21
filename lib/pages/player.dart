@@ -3,7 +3,6 @@
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
-import "package:flutter/widgets.dart";
 import "package:music/providers/metadata_provider.dart";
 import "package:music/providers/player_provider.dart";
 import "package:music/providers/playlist_provider.dart";
@@ -55,8 +54,8 @@ class _PlayerUIState extends State<PlayerUI> {
       }
     });
 
-    widget.player.onPlayerComplete.listen((event) {
-        skipNext(context);
+    widget.player.onPlayerComplete.listen((event) async {
+      skipNext(context);
     });
   }
 
@@ -146,6 +145,17 @@ class _PlayerUIState extends State<PlayerUI> {
     PlaylistProvider playlistProvider =
         Provider.of<PlaylistProvider>(context, listen: false);
     playlistProvider.shuffle();
+  }
+
+  void handleLoop() {
+    setState(() {
+      repeat = !repeat;
+    });
+    if (repeat) {
+      widget.player.setReleaseMode(ReleaseMode.loop);
+    } else {
+      widget.player.setReleaseMode(ReleaseMode.release);
+    }
   }
 
   @override
@@ -252,9 +262,7 @@ class _PlayerUIState extends State<PlayerUI> {
                         onTap: () => {skipNext(context)},
                         child: Icon(Icons.skip_next)),
                     GestureDetector(
-                      onTap: () => setState(() {
-                        repeat = !repeat;
-                      }),
+                      onTap: handleLoop,
                       child: Icon(
                         Icons.repeat_rounded,
                         color: !repeat ? Colors.black : Colors.purple[600],
