@@ -13,8 +13,10 @@ class PlaylistProvider extends ChangeNotifier {
   bool get mode => _mode;
 
   void addFiles(List<File> files) {
-    _playlist.addAll(files);
-    _shuffledPlaylist.addAll(files);
+    if (_playlist.length != files.length) {
+      _playlist.addAll(files);
+      _shuffledPlaylist.addAll(files);
+    }
     notifyListeners();
   }
 
