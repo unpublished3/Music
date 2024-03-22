@@ -32,7 +32,8 @@ class ListUI extends StatelessWidget {
   void setPlayer(context) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
     if (playerProvider.player.file == file) {
-      final playerPositionProvider = Provider.of<PlayerPositionProvider>(context, listen: false);
+      final playerPositionProvider =
+          Provider.of<PlayerPositionProvider>(context, listen: false);
       playerPositionProvider.alterPlayStatus(playerProvider.player.player);
       return;
     }
@@ -47,6 +48,8 @@ class ListUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PlayerUI player = Provider.of<PlayerProvider>(context).player;
+
     return FutureBuilder<void>(
       future: getMetadata(context),
       builder: (context, snapshot) {
@@ -61,6 +64,7 @@ class ListUI extends StatelessWidget {
           return GestureDetector(
               onTap: () => {setPlayer(context)},
               child: ListElement(
+                  current: player.file == file,
                   albumArt: requiredMetadata.albumArt,
                   trackName:
                       formatter.formatName(requiredMetadata.trackName, 30),
@@ -80,12 +84,14 @@ class ListElement extends StatelessWidget {
     required this.trackName,
     required this.artistName,
     required this.trackDuration,
+    required this.current,
   });
 
   final Image albumArt;
   final String trackName;
   final String artistName;
   final String trackDuration;
+  final bool current;
 
   @override
   Widget build(BuildContext context) {
@@ -95,8 +101,10 @@ class ListElement extends StatelessWidget {
         padding: EdgeInsets.all(12),
         height: MediaQuery.of(context).size.height * 0.1,
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 2),
-            borderRadius: BorderRadius.circular(12)),
+          border: Border.all(color: Colors.black, width: 2),
+          borderRadius: BorderRadius.circular(12),
+          color: current ? Colors.grey[400] : Colors.white,
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
