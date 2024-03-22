@@ -26,9 +26,11 @@ class PlayerPositionProvider extends ChangeNotifier {
 
   void alterPlayStatus() {
     _isPlaying = !_isPlaying;
+    notifyListeners();
   }
 
   void alterRepetition() {
     _repeat = !_repeat;
-  } 
+    notifyListeners();
+  }
 }

@@ -23,12 +23,10 @@ class PlayerUI extends StatefulWidget {
 
 class _PlayerUIState extends State<PlayerUI> {
   // Application State
-  bool _isPlaying = false;
   Duration? current = Duration.zero;
   late Duration duration;
   late String trackName, artistName;
   late Image albumArt;
-  bool repeat = false;
   late PlayerPositionProvider playerPositionProvider;
 
   @override
@@ -65,14 +63,12 @@ class _PlayerUIState extends State<PlayerUI> {
     await widget.player.setSourceDeviceFile(widget.file.path);
     playPause();
     if (mounted) {
-      setState(() {
-        _isPlaying = !_isPlaying;
-      });
+      playerPositionProvider.alterPlayStatus();
     }
   }
 
   void playPause() async {
-    if (_isPlaying) {
+    if (playerPositionProvider.isPlaying) {
       await widget.player.pause();
     } else {
       await widget.player.resume();
@@ -139,10 +135,8 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void handleLoop() {
-    setState(() {
-      repeat = !repeat;
-    });
-    if (repeat) {
+    playerPositionProvider.alterRepetition();
+    if (playerPositionProvider.repeat) {
       widget.player.setReleaseMode(ReleaseMode.loop);
     } else {
       widget.player.setReleaseMode(ReleaseMode.release);
@@ -242,13 +236,11 @@ class _PlayerUIState extends State<PlayerUI> {
                         onPressed: () {
                           playPause();
                           if (mounted) {
-                            setState(() {
-                              _isPlaying = !_isPlaying;
-                            });
+                            playerPositionProvider.alterPlayStatus();
                           }
                         },
                         child:
-                            Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                            Icon(value.isPlaying ? Icons.pause : Icons.play_arrow),
                       ),
                       GestureDetector(
                           onTap: () => {skipNext(context)},
@@ -257,7 +249,7 @@ class _PlayerUIState extends State<PlayerUI> {
                         onTap: handleLoop,
                         child: Icon(
                           Icons.repeat_rounded,
-                          color: !repeat ? Colors.black : Colors.purple[600],
+                          color: !value.repeat ? Colors.black : Colors.purple[600],
                         ),
                       )
                     ],
