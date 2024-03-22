@@ -61,17 +61,8 @@ class _PlayerUIState extends State<PlayerUI> {
 
   void setUrl() async {
     await widget.player.setSourceDeviceFile(widget.file.path);
-    playPause();
     if (mounted) {
-      playerPositionProvider.alterPlayStatus();
-    }
-  }
-
-  void playPause() async {
-    if (playerPositionProvider.isPlaying) {
-      await widget.player.pause();
-    } else {
-      await widget.player.resume();
+      playerPositionProvider.alterPlayStatus(widget.player);
     }
   }
 
@@ -234,13 +225,13 @@ class _PlayerUIState extends State<PlayerUI> {
                           child: Icon(Icons.skip_previous)),
                       ElevatedButton(
                         onPressed: () {
-                          playPause();
                           if (mounted) {
-                            playerPositionProvider.alterPlayStatus();
+                            playerPositionProvider
+                                .alterPlayStatus(widget.player);
                           }
                         },
-                        child:
-                            Icon(value.isPlaying ? Icons.pause : Icons.play_arrow),
+                        child: Icon(
+                            value.isPlaying ? Icons.pause : Icons.play_arrow),
                       ),
                       GestureDetector(
                           onTap: () => {skipNext(context)},
@@ -249,7 +240,8 @@ class _PlayerUIState extends State<PlayerUI> {
                         onTap: handleLoop,
                         child: Icon(
                           Icons.repeat_rounded,
-                          color: !value.repeat ? Colors.black : Colors.purple[600],
+                          color:
+                              !value.repeat ? Colors.black : Colors.purple[600],
                         ),
                       )
                     ],

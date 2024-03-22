@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class PlayerPositionProvider extends ChangeNotifier {
@@ -24,7 +25,13 @@ class PlayerPositionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void alterPlayStatus() {
+  void alterPlayStatus(AudioPlayer player) async {
+    if (isPlaying) {
+      await player.pause();
+    } else {
+      await player.resume();
+    }
+
     _isPlaying = !_isPlaying;
     notifyListeners();
   }
