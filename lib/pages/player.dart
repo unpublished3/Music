@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
 import "package:music/providers/metadata_provider.dart";
+import "package:music/providers/player_position_provider.dart";
 import "package:music/providers/player_provider.dart";
 import "package:music/providers/playlist_provider.dart";
 
@@ -29,6 +30,7 @@ class _PlayerUIState extends State<PlayerUI> {
   late Image albumArt;
   double percentageComplete = 0;
   bool repeat = false;
+  late PlayerPositionProvider playerPositionProvider;
 
   @override
   void initState() {
@@ -38,6 +40,9 @@ class _PlayerUIState extends State<PlayerUI> {
     RequiredMetadata? map =
         Provider.of<MetadataProvider>(context, listen: false)
             .metadataMap[widget.file.path];
+    playerPositionProvider =
+        Provider.of<PlayerPositionProvider>(context, listen: false);
+
     if (map != null) {
       artistName = map.artistName;
       trackName = map.trackName;
@@ -47,10 +52,7 @@ class _PlayerUIState extends State<PlayerUI> {
 
     widget.player.onPositionChanged.listen((newPostion) {
       if (mounted) {
-        setState(() {
-          current = newPostion;
-          percentageComplete = getPercentageComplete(current, duration);
-        });
+        playerPositionProvider.changePosition(newPostion, duration);
       }
     });
 
@@ -169,108 +171,111 @@ class _PlayerUIState extends State<PlayerUI> {
           nagivateToHome();
         }
       },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          appBar: AppBar(
-            leading: Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: GestureDetector(
-                onTap: () => {nagivateToHome()},
-                child: Icon(
-                  Icons.keyboard_arrow_down_sharp,
-                  size: 40,
+      child: Consumer<PlayerPositionProvider>(
+        builder: (context, value, child) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            appBar: AppBar(
+              leading: Padding(
+                padding: EdgeInsets.only(left: 25),
+                child: GestureDetector(
+                  onTap: () => {nagivateToHome()},
+                  child: Icon(
+                    Icons.keyboard_arrow_down_sharp,
+                    size: 40,
+                  ),
                 ),
               ),
             ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.only(
-                left: 50, right: 50, top: 50, bottom: 180),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Music Image
-                GestureDetector(
-                  onPanUpdate: (details) {
-                    if (details.delta.dx.abs() > details.delta.dy.abs()) {
-                      if (details.delta.dx < 0) {
-                        skipNext(context);
-                      } else if (details.delta.dx > 0) {
-                        skipPrevious();
-                      }
-                    }
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(image: albumArt.image)),
-                  ),
-                ),
-
-                Column(
-                  children: [Text(trackName), Text(artistName)],
-                ),
-
-                Column(
-                  children: [
-                    Slider(
-                      onChanged: (double value) async {
-                        percentageComplete = value;
-                        await widget.player.seek(
-                            Duration(seconds: seekLocation(value, duration)));
-                      },
-                      value: percentageComplete,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(formatter.formatDuration(current)),
-                        Text(formatter.formatDuration(duration))
-                      ],
-                    )
-                  ],
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () => {handleShuffle(context)},
-                      child: Icon(
-                        Icons.shuffle,
-                        color: !mode ? Colors.black : Colors.purple[600],
-                      ),
-                    ),
-                    GestureDetector(
-                        onTap: () => {skipPrevious()},
-                        child: Icon(Icons.skip_previous)),
-                    ElevatedButton(
-                      onPressed: () {
-                        playPause();
-                        if (mounted) {
-                          setState(() {
-                            _isPlaying = !_isPlaying;
-                          });
+            body: Padding(
+              padding: const EdgeInsets.only(
+                  left: 50, right: 50, top: 50, bottom: 180),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Music Image
+                  GestureDetector(
+                    onPanUpdate: (details) {
+                      if (details.delta.dx.abs() > details.delta.dy.abs()) {
+                        if (details.delta.dx < 0) {
+                          skipNext(context);
+                        } else if (details.delta.dx > 0) {
+                          skipPrevious();
                         }
-                      },
-                      child: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                      }
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(image: albumArt.image)),
                     ),
-                    GestureDetector(
-                        onTap: () => {skipNext(context)},
-                        child: Icon(Icons.skip_next)),
-                    GestureDetector(
-                      onTap: handleLoop,
-                      child: Icon(
-                        Icons.repeat_rounded,
-                        color: !repeat ? Colors.black : Colors.purple[600],
+                  ),
+
+                  Column(
+                    children: [Text(trackName), Text(artistName)],
+                  ),
+
+                  Column(
+                    children: [
+                      Slider(
+                        onChanged: (double value) async {
+                          percentageComplete = value;
+                          await widget.player.seek(
+                              Duration(seconds: seekLocation(value, duration)));
+                        },
+                        value: value.percentageComplete,
                       ),
-                    )
-                  ],
-                )
-              ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(formatter.formatDuration(value.current)),
+                          Text(formatter.formatDuration(duration))
+                        ],
+                      )
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () => {handleShuffle(context)},
+                        child: Icon(
+                          Icons.shuffle,
+                          color: !mode ? Colors.black : Colors.purple[600],
+                        ),
+                      ),
+                      GestureDetector(
+                          onTap: () => {skipPrevious()},
+                          child: Icon(Icons.skip_previous)),
+                      ElevatedButton(
+                        onPressed: () {
+                          playPause();
+                          if (mounted) {
+                            setState(() {
+                              _isPlaying = !_isPlaying;
+                            });
+                          }
+                        },
+                        child:
+                            Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                      ),
+                      GestureDetector(
+                          onTap: () => {skipNext(context)},
+                          child: Icon(Icons.skip_next)),
+                      GestureDetector(
+                        onTap: handleLoop,
+                        child: Icon(
+                          Icons.repeat_rounded,
+                          color: !repeat ? Colors.black : Colors.purple[600],
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
