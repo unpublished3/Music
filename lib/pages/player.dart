@@ -145,7 +145,7 @@ class _PlayerUIState extends State<PlayerUI> {
 
   @override
   Widget build(BuildContext context) {
-    bool mode = Provider.of<PlaylistProvider>(context, listen: false).mode;
+    bool mode = Provider.of<PlaylistProvider>(context).mode;
 
     return PopScope(
       canPop: false,
