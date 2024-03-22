@@ -28,7 +28,6 @@ class _PlayerUIState extends State<PlayerUI> {
   late Duration duration;
   late String trackName, artistName;
   late Image albumArt;
-  double percentageComplete = 0;
   bool repeat = false;
   late PlayerPositionProvider playerPositionProvider;
 
@@ -77,17 +76,6 @@ class _PlayerUIState extends State<PlayerUI> {
     } else {
       await widget.player.resume();
     }
-  }
-
-  double getPercentageComplete(Duration? current, Duration? duration) {
-    if (duration != null && current != null) {
-      if (duration.inSeconds == 0) {
-        return 0;
-      }
-
-      return (current.inSeconds / duration.inSeconds);
-    }
-    return 0;
   }
 
   int seekLocation(double value, Duration? duration) {
@@ -221,7 +209,6 @@ class _PlayerUIState extends State<PlayerUI> {
                     children: [
                       Slider(
                         onChanged: (double value) async {
-                          percentageComplete = value;
                           await widget.player.seek(
                               Duration(seconds: seekLocation(value, duration)));
                         },
