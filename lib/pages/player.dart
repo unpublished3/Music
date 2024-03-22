@@ -41,6 +41,7 @@ class _PlayerUIState extends State<PlayerUI> {
             .metadataMap[widget.file.path];
     playerPositionProvider =
         Provider.of<PlayerPositionProvider>(context, listen: false);
+    playerPositionProvider.reset();
 
     if (map != null) {
       artistName = map.artistName;
