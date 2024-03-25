@@ -72,7 +72,9 @@ class MusicList extends StatelessWidget {
           return Scaffold();
         } else if (snapshot.hasError) {
           // Handle any errors
-          return Scaffold(body: Center(child: Text('Error occurred')));
+          print(snapshot.error);
+          return Scaffold(
+              body: Center(child: Text('Error occurred music list')));
         } else {
           return CupertinoScrollbar(
             child: ListView.builder(

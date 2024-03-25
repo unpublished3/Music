@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
+import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/mobile_home.dart';
 import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
@@ -14,6 +15,8 @@ import 'package:music/utils/find_music_files.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MetadataGod.initialize();
   runApp(MyApp());
 }
 
@@ -55,7 +58,7 @@ class MyApp extends StatelessWidget {
                     } else if (snapshot.hasError) {
                       // Handle any errors
                       return Scaffold(
-                          body: Center(child: Text('Error occurred')));
+                          body: Center(child: Text('Error occurred main')));
                     } else {
                       // Permission granted or denied
                       if (snapshot.data == true) {

@@ -1,17 +1,17 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_media_metadata/flutter_media_metadata.dart';
+import 'package:metadata_god/metadata_god.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:path/path.dart';
 
 Future<RequiredMetadata> getMetadata(String filePath) async {
-  final audioMetadata = await MetadataRetriever.fromFile(File((filePath)));
+  // final audioMetadata = await MetadataRetriever.fromFile(File((filePath)));
+  final audioMetadata = await MetadataGod.readMetadata(file: filePath);
+
   return RequiredMetadata(
-      trackName(filePath, audioMetadata.trackName),
-      artistName(audioMetadata.trackArtistNames),
-      trackDuration(audioMetadata.trackDuration),
-      albumArt(audioMetadata.albumArt));
+      trackName(filePath, audioMetadata.title),
+      artistName(audioMetadata.artist),
+      trackDuration(audioMetadata.durationMs),
+      albumArt(audioMetadata.picture));
 }
 
 String trackName(String filePath, String? trackName) {
@@ -22,32 +22,27 @@ String trackName(String filePath, String? trackName) {
   return basenameWithoutExtension(filePath);
 }
 
-String artistName(List<String>? trackArtistNames) {
-  String artistNames = "";
+String artistName(String? trackArtistNames) {
   if (trackArtistNames != null) {
-    for (int i = 0; i < trackArtistNames.length; i++) {
-      if (i != 0) {
-        artistNames += ", ";
-      }
-      artistNames += trackArtistNames[i];
-    }
-    return artistNames;
+    return trackArtistNames;
   }
 
   return "";
 }
 
-Duration trackDuration(int? trackDuration) {
+Duration trackDuration(double? trackDuration) {
   if (trackDuration != null) {
-    return Duration(milliseconds: trackDuration);
+    return Duration(milliseconds: trackDuration.toInt());
   }
 
   return Duration.zero;
 }
 
-Image albumArt(Uint8List? art) {
+Image albumArt(Picture? art) {
   if (art != null) {
-    return Image.memory(art);
+    art.mimeType;
+    return Image.memory(art.data)
+    ;
   }
 
   return Image.asset("assets/image.jpg");

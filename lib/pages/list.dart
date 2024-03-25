@@ -58,7 +58,7 @@ class ListUI extends StatelessWidget {
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
           // Handle any errors
-          return Scaffold(body: Center(child: Text('Error occurred')));
+          return Scaffold(body: Center(child: Text('Error1 occurred')));
         } else {
           // Permission granted or denied
           return GestureDetector(
