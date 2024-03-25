@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, must_be_immutable
 
 import 'dart:io';
 
@@ -14,7 +14,8 @@ import 'package:music/utils/metadata.dart';
 import 'package:provider/provider.dart';
 
 class MusicList extends StatelessWidget {
-  MusicList({super.key});
+  MusicList({super.key, required this.directory});
+  String directory;
 
   Future<void> updateMusicFiles(context) async {
     FilesProvider filesProvider =
@@ -24,7 +25,7 @@ class MusicList extends StatelessWidget {
     PlaylistProvider playlistProvider =
         Provider.of<PlaylistProvider>(context, listen: false);
 
-    List<File> files = await findMp3Files();
+    List<File> files = await findMp3Files(directory);
 
     for (File file in files) {
       await setMetadata(context, file, metadataProvider);

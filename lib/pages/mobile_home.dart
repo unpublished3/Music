@@ -16,10 +16,12 @@ class MobileHome extends StatefulWidget {
 }
 
 class _MobileHomeState extends State<MobileHome> {
+  final directory = "/storage/emulated/0/Download";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: MusicList(),
+        body: MusicList(directory: directory,),
         floatingActionButton: Consumer<PlayerProvider>(
             builder: (context, value, child) =>
                 value.player.file.path != "/storage/emulated/0"

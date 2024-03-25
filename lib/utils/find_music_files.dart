@@ -1,10 +1,10 @@
 import 'dart:io';
 
 // Specify the internal storage directory path
-Future<List<File>> findMp3Files() async {
+Future<List<File>> findMp3Files(String directory) async {
 // Specify the internal storage directory path
   Directory internalDir =
-      Directory('/storage/emulated/0/Download'); // Change the path as needed
+      Directory(directory); // Change the path as needed
 
 // List all files in the directory (recursive search)
   List files =

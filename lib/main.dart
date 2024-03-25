@@ -11,7 +11,6 @@ import 'package:music/providers/playlist_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
-import 'package:music/utils/find_music_files.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -30,8 +29,6 @@ class MyApp extends StatelessWidget {
     }
     return false;
   }
-
-  final mp3Files = findMp3Files();
 
   @override
   Widget build(BuildContext context) {
