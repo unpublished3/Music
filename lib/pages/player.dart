@@ -116,7 +116,7 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void nagivateToHome() {
-    Navigator.popUntil(context, ModalRoute.withName("/home"));
+    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
   void handleShuffle(context) {
