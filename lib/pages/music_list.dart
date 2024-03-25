@@ -18,6 +18,8 @@ class MusicList extends StatelessWidget {
   String directory;
 
   Future<void> updateMusicFiles(context) async {
+    print(directory);
+
     FilesProvider filesProvider =
         Provider.of<FilesProvider>(context, listen: false);
     MetadataProvider metadataProvider =

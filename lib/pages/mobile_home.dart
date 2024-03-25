@@ -9,19 +9,18 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class MobileHome extends StatefulWidget {
-  const MobileHome({super.key});
+  MobileHome({super.key, required this.directory});
+  String directory;
 
   @override
   State<MobileHome> createState() => _MobileHomeState();
 }
 
 class _MobileHomeState extends State<MobileHome> {
-  final directory = "/storage/emulated/0/Download";
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: MusicList(directory: directory,),
+        body: MusicList(directory: widget.directory,),
         floatingActionButton: Consumer<PlayerProvider>(
             builder: (context, value, child) =>
                 value.player.file.path != "/storage/emulated/0"

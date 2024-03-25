@@ -42,6 +42,7 @@ dependencies:
   page_transition: ^2.1.0
   audio_service: ^0.18.12
   metadata_god: ^0.5.2+1
+  file_picker: ^8.0.0+1
 
 dev_dependencies:
   flutter_test:

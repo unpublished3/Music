@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/mobile_home.dart';
+import 'package:music/pages/music_list.dart';
 import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_position_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
+import 'package:music/utils/directory_selector.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
@@ -41,13 +43,40 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PlayerPositionProvider())
       ],
       child: MaterialApp(
-        initialRoute: "/home",
-        routes: {"/home": (context) => MobileHome()},
+        // initialRoute: "/home",
+        // routes: {
+        //   "/home": (context) => MobileHome(
+        //         directory: "/storage/emulated/0/Download",
+        //       )
+        // },
         debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          body: Platform.isAndroid
-              ? FutureBuilder<bool>(
-                  future: requestStoragePermission(),
+        home: Platform.isAndroid
+            ? FutureBuilder<bool>(
+                future: requestStoragePermission(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Show a loading indicator while waiting for permission result
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    // Handle any errors
+                    return Scaffold(
+                        body: Center(child: Text('Error occurred main')));
+                  } else {
+                    // Permission granted or denied
+                    if (snapshot.data == true) {
+                      return MobileHome(
+                        directory: "/storage/emulated/0/Download",
+                      );
+                    } else {
+                      return Scaffold(
+                          body: Center(child: Text('Permission denied')));
+                    }
+                  }
+                },
+              )
+            : Scaffold(
+                body: FutureBuilder<String>(
+                  future: selectDirectory(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       // Show a loading indicator while waiting for permission result
@@ -57,18 +86,20 @@ class MyApp extends StatelessWidget {
                       return Scaffold(
                           body: Center(child: Text('Error occurred main')));
                     } else {
-                      // Permission granted or denied
-                      if (snapshot.data == true) {
-                        return MobileHome();
+                      String directory = snapshot.data ?? "@!!cancelled!!@";
+                      print(directory);
+                      if (directory != "@!!cancelled!!@") {
+                        return MusicList(
+                          directory: directory,
+                        );
                       } else {
                         return Scaffold(
-                            body: Center(child: Text('Permission denied')));
+                            body: Center(child: Text('Cancelledx`')));
                       }
                     }
                   },
-                )
-              : Placeholder(),
-        ),
+                ),
+              ),
       ),
     );
   }
