@@ -1,5 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 class PlayerPositionProvider extends ChangeNotifier {
   late Duration _current;
@@ -29,7 +29,7 @@ class PlayerPositionProvider extends ChangeNotifier {
     if (isPlaying) {
       await player.pause();
     } else {
-      await player.resume();
+      await player.play();
     }
 
     _isPlaying = !_isPlaying;

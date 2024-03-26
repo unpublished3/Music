@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
 import "package:flutter/material.dart";
+import "package:just_audio/just_audio.dart";
 import 'dart:io';
-import "package:audioplayers/audioplayers.dart";
 import "package:music/providers/metadata_provider.dart";
 import "package:music/providers/player_position_provider.dart";
 import "package:music/providers/player_provider.dart";
@@ -48,21 +48,27 @@ class _PlayerUIState extends State<PlayerUI> {
       duration = map.trackDuration;
     }
 
-    widget.player.onPositionChanged.listen((newPostion) {
+    widget.player.positionStream.listen((newPostion) {
       if (mounted) {
         playerPositionProvider.changePosition(newPostion, duration);
       }
     });
 
-    widget.player.onPlayerComplete.listen((event) async {
-      if (!playerPositionProvider.repeat) {
-        skipNext(context);
-      }
-    });
+    // widget.player.onPositionChanged.listen((newPostion) {
+    // if (mounted) {
+    //   playerPositionProvider.changePosition(newPostion, duration);
+    // }
+    // });
+
+    // widget.player.onPlayerComplete.listen((event) async {
+    //   if (!playerPositionProvider.repeat) {
+    //     skipNext(context);
+    //   }
+    // });
   }
 
   void setUrl() async {
-    await widget.player.setSourceDeviceFile(widget.file.path);
+    await widget.player.setFilePath(widget.file.path);
     if (mounted) {
       playerPositionProvider.alterPlayStatus(widget.player);
     }
@@ -106,6 +112,7 @@ class _PlayerUIState extends State<PlayerUI> {
     PlayerUI player = PlayerUI(file: music);
     PlayerUI currentPlayer = playerProvider.player;
     currentPlayer.player.pause();
+    currentPlayer.player.dispose();
 
     Navigator.push(
         context,
@@ -130,9 +137,9 @@ class _PlayerUIState extends State<PlayerUI> {
   void handleLoop() {
     playerPositionProvider.alterRepetition();
     if (playerPositionProvider.repeat) {
-      widget.player.setReleaseMode(ReleaseMode.loop);
+      widget.player.setLoopMode(LoopMode.one);
     } else {
-      widget.player.setReleaseMode(ReleaseMode.release);
+      widget.player.setLoopMode(LoopMode.off);
     }
   }
 
