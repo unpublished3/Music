@@ -8,22 +8,22 @@ import 'package:music/providers/player_provider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
-class MobileHome extends StatefulWidget {
-  MobileHome({super.key, required this.directory});
+class Home extends StatefulWidget {
+  Home({super.key, required this.directory});
   String directory;
 
   @override
-  State<MobileHome> createState() => _MobileHomeState();
+  State<Home> createState() => _HomeState();
 }
 
-class _MobileHomeState extends State<MobileHome> {
+class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: MusicList(directory: widget.directory,),
         floatingActionButton: Consumer<PlayerProvider>(
             builder: (context, value, child) =>
-                value.player.file.path != "/storage/emulated/0"
+                value.player.file.path != "none"
                     ? FloatingImage(
                         player: value.player,
                       )

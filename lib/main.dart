@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:metadata_god/metadata_god.dart';
-import 'package:music/pages/mobile_home.dart';
+import 'package:music/pages/home.dart';
 import 'package:music/pages/music_list.dart';
 import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
                   } else {
                     // Permission granted or denied
                     if (snapshot.data == true) {
-                      return MobileHome(
+                      return Home(
                         directory: "/storage/emulated/0/Download",
                       );
                     } else {
@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
                     } else {
                       String directory = snapshot.data ?? "@!!cancelled!!@";
                       if (directory != "@!!cancelled!!@") {
-                        return MusicList(
+                        return Home(
                           directory: directory,
                         );
                       } else {
