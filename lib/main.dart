@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/home.dart';
-import 'package:music/pages/music_list.dart';
 import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_position_provider.dart';
