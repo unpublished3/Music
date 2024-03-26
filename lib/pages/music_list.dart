@@ -18,8 +18,6 @@ class MusicList extends StatelessWidget {
   String directory;
 
   Future<void> updateMusicFiles(context) async {
-    print(directory);
-
     FilesProvider filesProvider =
         Provider.of<FilesProvider>(context, listen: false);
     MetadataProvider metadataProvider =
@@ -75,7 +73,6 @@ class MusicList extends StatelessWidget {
           return Scaffold();
         } else if (snapshot.hasError) {
           // Handle any errors
-          print(snapshot.error);
           return Scaffold(
               body: Center(child: Text('Error occurred music list')));
         } else {

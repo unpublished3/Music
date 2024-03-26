@@ -87,7 +87,6 @@ class MyApp extends StatelessWidget {
                           body: Center(child: Text('Error occurred main')));
                     } else {
                       String directory = snapshot.data ?? "@!!cancelled!!@";
-                      print(directory);
                       if (directory != "@!!cancelled!!@") {
                         return MusicList(
                           directory: directory,

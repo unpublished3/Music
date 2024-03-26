@@ -55,7 +55,9 @@ class _PlayerUIState extends State<PlayerUI> {
     });
 
     widget.player.onPlayerComplete.listen((event) async {
-      skipNext(context);
+      if (!playerPositionProvider.repeat) {
+        skipNext(context);
+      }
     });
   }
 
