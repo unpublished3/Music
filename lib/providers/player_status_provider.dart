@@ -1,5 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:music/providers/metadata_provider.dart';
+import 'package:provider/provider.dart';
 
 class PlayerStatusProvider extends ChangeNotifier {
   late Duration _current;
@@ -7,16 +9,35 @@ class PlayerStatusProvider extends ChangeNotifier {
   late bool _isPlaying;
   late bool _repeat;
 
+  late Duration _duration;
+  late String _trackName, _artistName;
+  late Image _albumArt;
+
   Duration get current => _current;
+  Duration get duration => _duration;
+  String get trackName => _trackName;
+  String get artistName => _artistName;
+  Image get albumArt => _albumArt;
   double get percentageComplete => _percentageComplete;
   bool get isPlaying => _isPlaying;
   bool get repeat => _repeat;
 
-  void reset() {
+  void set(context, String path) async {
+    RequiredMetadata? map =
+        Provider.of<MetadataProvider>(context, listen: false).metadataMap[path];
+
     _current = Duration.zero;
     _percentageComplete = 0;
     _isPlaying = false;
     _repeat = false;
+
+    if (map != null) {
+      _artistName = map.artistName;
+      _trackName = map.trackName;
+      _albumArt = map.albumArt;
+      _duration = map.trackDuration;
+    }
+    notifyListeners();
   }
 
   void changePosition(Duration newPostion, Duration duration) {

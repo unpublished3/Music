@@ -3,7 +3,6 @@
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
-import "package:music/providers/metadata_provider.dart";
 import "package:music/providers/player_status_provider.dart";
 import "package:music/providers/player_provider.dart";
 import "package:music/providers/playlist_provider.dart";
@@ -23,10 +22,7 @@ class PlayerUI extends StatefulWidget {
 
 class _PlayerUIState extends State<PlayerUI> {
   // Application State
-  Duration? current = Duration.zero;
-  late Duration duration;
-  late String trackName, artistName;
-  late Image albumArt;
+
   late PlayerStatusProvider playerStatusProvider;
 
   @override
@@ -34,24 +30,14 @@ class _PlayerUIState extends State<PlayerUI> {
     super.initState();
     setUrl();
 
-    RequiredMetadata? map =
-        Provider.of<MetadataProvider>(context, listen: false)
-            .metadataMap[widget.file.path];
-
     playerStatusProvider =
         Provider.of<PlayerStatusProvider>(context, listen: false);
-    playerStatusProvider.reset();
+    playerStatusProvider.set(context, widget.file.path);
 
-    if (map != null) {
-      artistName = map.artistName;
-      trackName = map.trackName;
-      albumArt = map.albumArt;
-      duration = map.trackDuration;
-    }
 
     widget.player.onPositionChanged.listen((newPostion) {
       if (mounted) {
-        playerStatusProvider.changePosition(newPostion, duration);
+        playerStatusProvider.changePosition(newPostion, playerStatusProvider.duration);
       }
     });
 
@@ -186,12 +172,12 @@ class _PlayerUIState extends State<PlayerUI> {
                       height: MediaQuery.of(context).size.height * 0.35,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                          image: DecorationImage(image: albumArt.image)),
+                          image: DecorationImage(image: playerStatusProvider.albumArt.image)),
                     ),
                   ),
 
                   Column(
-                    children: [Text(trackName), Text(artistName)],
+                    children: [Text(playerStatusProvider.trackName), Text(playerStatusProvider.artistName)],
                   ),
 
                   Column(
@@ -199,7 +185,7 @@ class _PlayerUIState extends State<PlayerUI> {
                       Slider(
                         onChanged: (double value) async {
                           await widget.player.seek(
-                              Duration(seconds: seekLocation(value, duration)));
+                              Duration(seconds: seekLocation(value, playerStatusProvider.duration)));
                         },
                         value: value.percentageComplete,
                       ),
@@ -207,7 +193,7 @@ class _PlayerUIState extends State<PlayerUI> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(formatter.formatDuration(value.current)),
-                          Text(formatter.formatDuration(duration))
+                          Text(formatter.formatDuration(playerStatusProvider.duration))
                         ],
                       )
                     ],
