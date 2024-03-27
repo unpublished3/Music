@@ -23,7 +23,6 @@ class PlayerUI extends StatefulWidget {
 
 class _PlayerUIState extends State<PlayerUI> {
   // Application State
-  Duration? current = Duration.zero;
   late Duration duration;
   late String trackName, artistName;
   late Image albumArt;
@@ -68,7 +67,9 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void setUrl() async {
-    await widget.player.setFilePath(widget.file.path);
+    if (widget.player.duration == null) {
+      await widget.player.setFilePath(widget.file.path);
+    }
     if (mounted) {
       playerPositionProvider.alterPlayStatus(widget.player);
     }
