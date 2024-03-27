@@ -5,7 +5,7 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/home.dart';
 import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
-import 'package:music/providers/player_position_provider.dart';
+import 'package:music/providers/player_status_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
 import 'package:music/utils/directory_selector.dart';
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => MetadataProvider()),
         ChangeNotifierProvider(create: (context) => FilesProvider()),
         ChangeNotifierProvider(create: (context) => PlaylistProvider()),
-        ChangeNotifierProvider(create: (context) => PlayerPositionProvider())
+        ChangeNotifierProvider(create: (context) => PlayerStatusProvider())
       ],
       child: MaterialApp(
         // initialRoute: "/home",

@@ -4,7 +4,7 @@ import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
 import "package:music/providers/metadata_provider.dart";
-import "package:music/providers/player_position_provider.dart";
+import "package:music/providers/player_status_provider.dart";
 import "package:music/providers/player_provider.dart";
 import "package:music/providers/playlist_provider.dart";
 
@@ -27,7 +27,7 @@ class _PlayerUIState extends State<PlayerUI> {
   late Duration duration;
   late String trackName, artistName;
   late Image albumArt;
-  late PlayerPositionProvider playerPositionProvider;
+  late PlayerStatusProvider playerStatusProvider;
 
   @override
   void initState() {
@@ -37,9 +37,10 @@ class _PlayerUIState extends State<PlayerUI> {
     RequiredMetadata? map =
         Provider.of<MetadataProvider>(context, listen: false)
             .metadataMap[widget.file.path];
-    playerPositionProvider =
-        Provider.of<PlayerPositionProvider>(context, listen: false);
-    playerPositionProvider.reset();
+
+    playerStatusProvider =
+        Provider.of<PlayerStatusProvider>(context, listen: false);
+    playerStatusProvider.reset();
 
     if (map != null) {
       artistName = map.artistName;
@@ -50,12 +51,12 @@ class _PlayerUIState extends State<PlayerUI> {
 
     widget.player.onPositionChanged.listen((newPostion) {
       if (mounted) {
-        playerPositionProvider.changePosition(newPostion, duration);
+        playerStatusProvider.changePosition(newPostion, duration);
       }
     });
 
     widget.player.onPlayerComplete.listen((event) async {
-      if (!playerPositionProvider.repeat) {
+      if (!playerStatusProvider.repeat) {
         skipNext(context);
       }
     });
@@ -64,7 +65,7 @@ class _PlayerUIState extends State<PlayerUI> {
   void setUrl() async {
     await widget.player.setSourceDeviceFile(widget.file.path);
     if (mounted) {
-      playerPositionProvider.alterPlayStatus(widget.player);
+      playerStatusProvider.alterPlayStatus(widget.player);
     }
   }
 
@@ -128,8 +129,8 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void handleLoop() {
-    playerPositionProvider.alterRepetition();
-    if (playerPositionProvider.repeat) {
+    playerStatusProvider.alterRepetition();
+    if (playerStatusProvider.repeat) {
       widget.player.setReleaseMode(ReleaseMode.loop);
     } else {
       widget.player.setReleaseMode(ReleaseMode.release);
@@ -147,7 +148,7 @@ class _PlayerUIState extends State<PlayerUI> {
           nagivateToHome();
         }
       },
-      child: Consumer<PlayerPositionProvider>(
+      child: Consumer<PlayerStatusProvider>(
         builder: (context, value, child) => MaterialApp(
           debugShowCheckedModeBanner: false,
           home: Scaffold(
@@ -228,7 +229,7 @@ class _PlayerUIState extends State<PlayerUI> {
                       ElevatedButton(
                         onPressed: () {
                           if (mounted) {
-                            playerPositionProvider
+                            playerStatusProvider
                                 .alterPlayStatus(widget.player);
                           }
                         },

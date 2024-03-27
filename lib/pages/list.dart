@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:music/pages/player.dart';
 import 'package:music/providers/metadata_provider.dart';
-import 'package:music/providers/player_position_provider.dart';
+import 'package:music/providers/player_status_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dart:io';
@@ -32,9 +32,9 @@ class ListUI extends StatelessWidget {
   void setPlayer(context) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
     if (playerProvider.player.file == file) {
-      final playerPositionProvider =
-          Provider.of<PlayerPositionProvider>(context, listen: false);
-      playerPositionProvider.alterPlayStatus(playerProvider.player.player);
+      final playerStatusProvider =
+          Provider.of<PlayerStatusProvider>(context, listen: false);
+      playerStatusProvider.alterPlayStatus(playerProvider.player.player);
       return;
     }
     PlayerUI player = PlayerUI(file: file);

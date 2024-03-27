@@ -1,7 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
-class PlayerPositionProvider extends ChangeNotifier {
+class PlayerStatusProvider extends ChangeNotifier {
   late Duration _current;
   late double _percentageComplete;
   late bool _isPlaying;
