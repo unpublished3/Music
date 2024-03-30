@@ -32,8 +32,8 @@ class PlaylistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  set setCurrent(File file) {
-    _current = file.path;
+  void setCurrent(String path) {
+    _current = path;
   }
 
   String get current => _current;

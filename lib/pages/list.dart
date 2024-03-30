@@ -9,6 +9,7 @@ import 'package:music/providers/player_status_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:path/path.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 
@@ -32,15 +33,17 @@ class ListUI extends StatelessWidget {
 
   void setPlayer(context) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-    String current = Provider.of<PlaylistProvider>(context, listen: false).current;
+    final playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
 
-    if (current == file.path) {
+    if (playlistProvider.current == file.path) {
       final playerStatusProvider =
           Provider.of<PlayerStatusProvider>(context, listen: false);
       playerStatusProvider.alterPlayStatus(playerProvider.player.player);
       return;
     }
     PlayerUI player = PlayerUI();
+    playlistProvider.setCurrent(file.path);
     PlayerUI currentPlayer = playerProvider.player;
     currentPlayer.player.pause();
 
@@ -51,7 +54,8 @@ class ListUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String current = Provider.of<PlaylistProvider>(context, listen: false).current;
+    String current =
+        Provider.of<PlaylistProvider>(context, listen: false).current;
 
     return FutureBuilder<void>(
       future: getMetadata(context),
