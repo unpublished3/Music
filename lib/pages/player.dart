@@ -12,32 +12,32 @@ import "package:page_transition/page_transition.dart";
 import "package:provider/provider.dart";
 
 class PlayerUI extends StatefulWidget {
-  File file;
   final player = AudioPlayer();
-  PlayerUI({super.key, required this.file});
+  PlayerUI({super.key});
 
   @override
   State<PlayerUI> createState() => _PlayerUIState();
 }
 
 class _PlayerUIState extends State<PlayerUI> {
-  // Application State
-
   late PlayerStatusProvider playerStatusProvider;
+  late File file;
 
   @override
   void initState() {
     super.initState();
+    file = File(Provider.of<PlaylistProvider>(context, listen: false).current);
+
     setUrl();
 
     playerStatusProvider =
         Provider.of<PlayerStatusProvider>(context, listen: false);
-    playerStatusProvider.set(context, widget.file.path);
-
+    playerStatusProvider.set(context, file.path);
 
     widget.player.onPositionChanged.listen((newPostion) {
       if (mounted) {
-        playerStatusProvider.changePosition(newPostion, playerStatusProvider.duration);
+        playerStatusProvider.changePosition(
+            newPostion, playerStatusProvider.duration);
       }
     });
 
@@ -49,7 +49,7 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void setUrl() async {
-    await widget.player.setSourceDeviceFile(widget.file.path);
+    await widget.player.setSourceDeviceFile(file.path);
     if (mounted) {
       playerStatusProvider.alterPlayStatus(widget.player);
     }
@@ -65,7 +65,7 @@ class _PlayerUIState extends State<PlayerUI> {
   void skipNext(context) {
     List<File> musicFiles =
         Provider.of<PlaylistProvider>(context, listen: false).playlist;
-    int index = musicFiles.indexOf(widget.file);
+    int index = musicFiles.indexOf(file);
     if (index == musicFiles.length) {
       index = -1;
     }
@@ -79,7 +79,7 @@ class _PlayerUIState extends State<PlayerUI> {
   void skipPrevious() {
     List<File> musicFiles =
         Provider.of<PlaylistProvider>(context, listen: false).playlist;
-    int index = musicFiles.indexOf(widget.file);
+    int index = musicFiles.indexOf(file);
 
     int previousMusicIndex =
         (index - 1 + musicFiles.length) % musicFiles.length;
@@ -90,7 +90,7 @@ class _PlayerUIState extends State<PlayerUI> {
 
   void nagivateToNewPlayer(context, File music, int direction) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-    PlayerUI player = PlayerUI(file: music);
+    PlayerUI player = PlayerUI();
     PlayerUI currentPlayer = playerProvider.player;
     currentPlayer.player.pause();
 
@@ -172,20 +172,25 @@ class _PlayerUIState extends State<PlayerUI> {
                       height: MediaQuery.of(context).size.height * 0.35,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                          image: DecorationImage(image: playerStatusProvider.albumArt.image)),
+                          image: DecorationImage(
+                              image: playerStatusProvider.albumArt.image)),
                     ),
                   ),
 
                   Column(
-                    children: [Text(playerStatusProvider.trackName), Text(playerStatusProvider.artistName)],
+                    children: [
+                      Text(playerStatusProvider.trackName),
+                      Text(playerStatusProvider.artistName)
+                    ],
                   ),
 
                   Column(
                     children: [
                       Slider(
                         onChanged: (double value) async {
-                          await widget.player.seek(
-                              Duration(seconds: seekLocation(value, playerStatusProvider.duration)));
+                          await widget.player.seek(Duration(
+                              seconds: seekLocation(
+                                  value, playerStatusProvider.duration)));
                         },
                         value: value.percentageComplete,
                       ),
@@ -193,7 +198,8 @@ class _PlayerUIState extends State<PlayerUI> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(formatter.formatDuration(value.current)),
-                          Text(formatter.formatDuration(playerStatusProvider.duration))
+                          Text(formatter
+                              .formatDuration(playerStatusProvider.duration))
                         ],
                       )
                     ],
@@ -215,8 +221,7 @@ class _PlayerUIState extends State<PlayerUI> {
                       ElevatedButton(
                         onPressed: () {
                           if (mounted) {
-                            playerStatusProvider
-                                .alterPlayStatus(widget.player);
+                            playerStatusProvider.alterPlayStatus(widget.player);
                           }
                         },
                         child: Icon(

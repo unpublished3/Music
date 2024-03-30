@@ -5,54 +5,42 @@ import 'package:music/pages/music_list.dart';
 import 'package:music/pages/player.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';
+import 'package:music/providers/playlist_provider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatelessWidget {
   Home({super.key, required this.directory});
   String directory;
 
   @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  @override
   Widget build(BuildContext context) {
+    // String current = Provider.of<PlaylistProvider>(context, listen: false).current;
     return Scaffold(
-        body: MusicList(directory: widget.directory,),
-        floatingActionButton: Consumer<PlayerProvider>(
+        body: MusicList(directory: directory,),
+        floatingActionButton: Consumer<PlaylistProvider>(
             builder: (context, value, child) =>
-                value.player.file.path != "none"
+                value.current != "none"
                     ? FloatingImage(
-                        player: value.player,
+                        current: value.current,
                       )
                     : Container()));
   }
 }
 
-class FloatingImage extends StatefulWidget {
-  FloatingImage({super.key, required this.player});
+class FloatingImage extends StatelessWidget {
+  FloatingImage({super.key, required this.current});
 
-  PlayerUI player;
+  String current;
 
-  @override
-  State<FloatingImage> createState() => _FloatingImageState();
-}
-
-class _FloatingImageState extends State<FloatingImage> {
   late Image albumArt;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     RequiredMetadata? map =
         Provider.of<MetadataProvider>(context, listen: false)
-            .metadataMap[widget.player.file.path];
+            .metadataMap[current];
+    final player = Provider.of<PlayerProvider>(context).player;
     if (map != null) {
       albumArt = map.albumArt;
     }
@@ -62,7 +50,7 @@ class _FloatingImageState extends State<FloatingImage> {
         Navigator.push(
             context,
             PageTransition(
-                child: widget.player, type: PageTransitionType.bottomToTop));
+                child: player, type: PageTransitionType.bottomToTop));
       },
       child: Container(
         height: 50,

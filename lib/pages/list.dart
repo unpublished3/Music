@@ -7,6 +7,7 @@ import 'package:music/pages/player.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_status_provider.dart';
 import 'package:music/providers/player_provider.dart';
+import 'package:music/providers/playlist_provider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
@@ -31,13 +32,15 @@ class ListUI extends StatelessWidget {
 
   void setPlayer(context) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-    if (playerProvider.player.file == file) {
+    String current = Provider.of<PlaylistProvider>(context, listen: false).current;
+
+    if (current == file.path) {
       final playerStatusProvider =
           Provider.of<PlayerStatusProvider>(context, listen: false);
       playerStatusProvider.alterPlayStatus(playerProvider.player.player);
       return;
     }
-    PlayerUI player = PlayerUI(file: file);
+    PlayerUI player = PlayerUI();
     PlayerUI currentPlayer = playerProvider.player;
     currentPlayer.player.pause();
 
@@ -48,7 +51,7 @@ class ListUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PlayerUI player = Provider.of<PlayerProvider>(context).player;
+    String current = Provider.of<PlaylistProvider>(context, listen: false).current;
 
     return FutureBuilder<void>(
       future: getMetadata(context),
@@ -64,7 +67,7 @@ class ListUI extends StatelessWidget {
           return GestureDetector(
               onTap: () => {setPlayer(context)},
               child: ListElement(
-                  current: player.file == file,
+                  current: current == file.path,
                   albumArt: requiredMetadata.albumArt,
                   trackName:
                       formatter.formatName(requiredMetadata.trackName, 30),

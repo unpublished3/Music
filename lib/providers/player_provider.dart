@@ -5,7 +5,7 @@ import 'package:music/pages/player.dart';
 
 class PlayerProvider extends ChangeNotifier {
   PlayerUI _player =
-      PlayerUI(file: File.fromUri(Uri.file("none")));
+      PlayerUI();
   PlayerUI get player => _player;
 
   void changePlayer({required PlayerUI newPlayer}) async {
