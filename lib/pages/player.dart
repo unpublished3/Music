@@ -65,7 +65,8 @@ class _PlayerUIState extends State<PlayerUI> {
   void skipNext(context) {
     List<File> musicFiles =
         Provider.of<PlaylistProvider>(context, listen: false).playlist;
-    int index = musicFiles.indexOf(file);
+    int index = musicFiles.indexWhere((element) => element.path == file.path);
+
     if (index == musicFiles.length) {
       index = -1;
     }
@@ -79,7 +80,7 @@ class _PlayerUIState extends State<PlayerUI> {
   void skipPrevious() {
     List<File> musicFiles =
         Provider.of<PlaylistProvider>(context, listen: false).playlist;
-    int index = musicFiles.indexOf(file);
+    int index = musicFiles.indexWhere((element) => element.path == file.path);
 
     int previousMusicIndex =
         (index - 1 + musicFiles.length) % musicFiles.length;
@@ -90,7 +91,12 @@ class _PlayerUIState extends State<PlayerUI> {
 
   void nagivateToNewPlayer(context, File music, int direction) {
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+    final playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
+
     PlayerUI player = PlayerUI();
+    playlistProvider.setCurrent(music.path);
+
     PlayerUI currentPlayer = playerProvider.player;
     currentPlayer.player.pause();
 

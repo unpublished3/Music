@@ -9,7 +9,6 @@ import 'package:music/providers/player_status_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:path/path.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 
@@ -42,6 +41,7 @@ class ListUI extends StatelessWidget {
       playerStatusProvider.alterPlayStatus(playerProvider.player.player);
       return;
     }
+    
     PlayerUI player = PlayerUI();
     playlistProvider.setCurrent(file.path);
     PlayerUI currentPlayer = playerProvider.player;
