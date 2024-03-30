@@ -22,13 +22,13 @@ class _PlayerUIState extends State<PlayerUI> {
   late PlayerStatusProvider playerStatusProvider;
   late AudioPlayer audioPlayer;
   late File file;
-  
 
   @override
   void initState() {
     super.initState();
     file = File(Provider.of<PlaylistProvider>(context, listen: false).current);
-    audioPlayer = Provider.of<PlayerProvider>(context, listen: false).audioPlayer;
+    audioPlayer =
+        Provider.of<PlayerProvider>(context, listen: false).audioPlayer;
 
     setUrl();
 
@@ -198,7 +198,10 @@ class _PlayerUIState extends State<PlayerUI> {
                               seconds: seekLocation(
                                   value, playerStatusProvider.duration)));
                         },
-                        value: value.percentageComplete,
+                        value: value.percentageComplete >= 0 &&
+                                value.percentageComplete <= 1
+                            ? value.percentageComplete
+                            : 0,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
