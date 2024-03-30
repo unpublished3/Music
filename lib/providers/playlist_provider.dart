@@ -34,6 +34,7 @@ class PlaylistProvider extends ChangeNotifier {
 
   void setCurrent(String path) {
     _current = path;
+    notifyListeners();
   }
 
   String get current => _current;

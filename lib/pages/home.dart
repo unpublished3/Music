@@ -37,7 +37,7 @@ class FloatingImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RequiredMetadata? map =
-        Provider.of<MetadataProvider>(context, listen: false)
+        Provider.of<MetadataProvider>(context)
             .metadataMap[current];
     final player = Provider.of<PlayerProvider>(context).player;
     if (map != null) {
