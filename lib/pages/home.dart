@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:music/pages/music_list.dart';
-import 'package:music/pages/player.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
