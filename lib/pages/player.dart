@@ -12,7 +12,6 @@ import "package:page_transition/page_transition.dart";
 import "package:provider/provider.dart";
 
 class PlayerUI extends StatefulWidget {
-  final player = AudioPlayer();
   PlayerUI({super.key});
 
   @override
@@ -21,12 +20,15 @@ class PlayerUI extends StatefulWidget {
 
 class _PlayerUIState extends State<PlayerUI> {
   late PlayerStatusProvider playerStatusProvider;
+  late AudioPlayer audioPlayer;
   late File file;
+  
 
   @override
   void initState() {
     super.initState();
     file = File(Provider.of<PlaylistProvider>(context, listen: false).current);
+    audioPlayer = Provider.of<PlayerProvider>(context, listen: false).audioPlayer;
 
     setUrl();
 
@@ -34,14 +36,14 @@ class _PlayerUIState extends State<PlayerUI> {
         Provider.of<PlayerStatusProvider>(context, listen: false);
     playerStatusProvider.set(context, file.path);
 
-    widget.player.onPositionChanged.listen((newPostion) {
+    audioPlayer.onPositionChanged.listen((newPostion) {
       if (mounted) {
         playerStatusProvider.changePosition(
             newPostion, playerStatusProvider.duration);
       }
     });
 
-    widget.player.onPlayerComplete.listen((event) async {
+    audioPlayer.onPlayerComplete.listen((event) async {
       if (!playerStatusProvider.repeat) {
         skipNext(context);
       }
@@ -49,9 +51,9 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void setUrl() async {
-    await widget.player.setSourceDeviceFile(file.path);
+    await audioPlayer.setSourceDeviceFile(file.path);
     if (mounted) {
-      playerStatusProvider.alterPlayStatus(widget.player);
+      playerStatusProvider.alterPlayStatus(audioPlayer);
     }
   }
 
@@ -94,11 +96,9 @@ class _PlayerUIState extends State<PlayerUI> {
     final playlistProvider =
         Provider.of<PlaylistProvider>(context, listen: false);
 
+    audioPlayer.pause();
     PlayerUI player = PlayerUI();
     playlistProvider.setCurrent(music.path);
-
-    PlayerUI currentPlayer = playerProvider.player;
-    currentPlayer.player.pause();
 
     Navigator.push(
         context,
@@ -123,9 +123,9 @@ class _PlayerUIState extends State<PlayerUI> {
   void handleLoop() {
     playerStatusProvider.alterRepetition();
     if (playerStatusProvider.repeat) {
-      widget.player.setReleaseMode(ReleaseMode.loop);
+      audioPlayer.setReleaseMode(ReleaseMode.loop);
     } else {
-      widget.player.setReleaseMode(ReleaseMode.release);
+      audioPlayer.setReleaseMode(ReleaseMode.release);
     }
   }
 
@@ -194,7 +194,7 @@ class _PlayerUIState extends State<PlayerUI> {
                     children: [
                       Slider(
                         onChanged: (double value) async {
-                          await widget.player.seek(Duration(
+                          await audioPlayer.seek(Duration(
                               seconds: seekLocation(
                                   value, playerStatusProvider.duration)));
                         },
@@ -227,7 +227,7 @@ class _PlayerUIState extends State<PlayerUI> {
                       ElevatedButton(
                         onPressed: () {
                           if (mounted) {
-                            playerStatusProvider.alterPlayStatus(widget.player);
+                            playerStatusProvider.alterPlayStatus(audioPlayer);
                           }
                         },
                         child: Icon(
