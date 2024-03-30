@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class PlaylistProvider extends ChangeNotifier {
   final List<File> _playlist = [];
   final List<File> _shuffledPlaylist = [];
+  String _current = "none";
   bool _mode = false;
 
   List<File> get playlist =>
@@ -30,4 +31,10 @@ class PlaylistProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  set setCurrent(File file) {
+    _current = file.path;
+  }
+
+  String get current => _current;
 }
