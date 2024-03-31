@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
+import "dart:math";
+
 import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
 import 'dart:io';
@@ -208,7 +210,7 @@ class _PlayerUIState extends State<PlayerUI> {
                           await widget.player.seek(
                               Duration(seconds: seekLocation(value, duration)));
                         },
-                        value: value.percentageComplete,
+                        value: min(value.percentageComplete, 1),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
