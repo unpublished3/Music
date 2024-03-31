@@ -55,17 +55,14 @@ class _PlayerUIState extends State<PlayerUI> {
       }
     });
 
-    // widget.player.onPositionChanged.listen((newPostion) {
-    // if (mounted) {
-    //   playerPositionProvider.changePosition(newPostion, duration);
-    // }
-    // });
-
-    // widget.player.onPlayerComplete.listen((event) async {
-    //   if (!playerPositionProvider.repeat) {
-    //     skipNext(context);
-    //   }
-    // });
+    widget.player.playbackEventStream.listen((event) {
+      print(event);
+      if (event.processingState == ProcessingState.completed) {
+        if (!playerPositionProvider.repeat) {
+          skipNext(context);
+        }
+      }
+    });
   }
 
   void setUrl() async {
