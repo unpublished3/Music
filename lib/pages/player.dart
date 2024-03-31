@@ -49,18 +49,21 @@ class _PlayerUIState extends State<PlayerUI> {
       duration = map.trackDuration;
     }
 
-    widget.player.positionStream.listen((newPostion) {
-      if (mounted) {
-        playerPositionProvider.changePosition(newPostion, duration);
+    widget.player.playbackEventStream.listen((event) async {
+      if (event.processingState == ProcessingState.completed) {
+        if (!playerPositionProvider.repeat && mounted) {
+          skipNext(context);
+        }
       }
     });
 
-    widget.player.playbackEventStream.listen((event) {
-      print(event);
-      if (event.processingState == ProcessingState.completed) {
-        if (!playerPositionProvider.repeat) {
-          skipNext(context);
-        }
+    widget.player.positionStream.listen((newPostion) {
+      if (Platform.isLinux && newPostion.inSeconds == duration.inSeconds) {
+        skipNext(context);
+      }
+
+      if (mounted) {
+        playerPositionProvider.changePosition(newPostion, duration);
       }
     });
   }
