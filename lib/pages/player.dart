@@ -39,7 +39,8 @@ class _PlayerUIState extends State<PlayerUI> {
       if (newPostion >= playerStatusProvider.duration &&
           !playerStatusProvider.repeat &&
           mounted) {
-        skipNext(context);
+        playNext();
+        nagivateToNewPlayer(context, 0);
       }
 
       if (mounted) {
@@ -50,7 +51,9 @@ class _PlayerUIState extends State<PlayerUI> {
 
     widget.player.onPlayerComplete.listen((event) async {
       if (!playerStatusProvider.repeat && mounted) {
-        skipNext(context);
+        Workmanager().registerOneOffTask("1", "skipNext");
+        playNext();
+        nagivateToNewPlayer(context, 0);
       }
     });
   }
@@ -69,11 +72,13 @@ class _PlayerUIState extends State<PlayerUI> {
     return 0;
   }
 
-  void skipNext(context) {
-    Workmanager().registerOneOffTask("1", "skipNext");
-
+  void playNext() {
     List<File> musicFiles =
         Provider.of<PlaylistProvider>(context, listen: false).playlist;
+    final playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
+    final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+
     int index = musicFiles.indexWhere((element) => element.path == file.path);
 
     if (index == musicFiles.length) {
@@ -83,31 +88,35 @@ class _PlayerUIState extends State<PlayerUI> {
     int nextMusicIndex = (index + 1) % musicFiles.length;
     File nextMusicFile = musicFiles[nextMusicIndex];
 
-    nagivateToNewPlayer(context, nextMusicFile, 0);
+    PlayerUI currentPlayer = playerProvider.player;
+    currentPlayer.player.pause();
+
+    playlistProvider.setCurrent(nextMusicFile.path);
   }
 
-  void skipPrevious() {
+  void playPrevious() {
     List<File> musicFiles =
         Provider.of<PlaylistProvider>(context, listen: false).playlist;
+    final playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
+    final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+
     int index = musicFiles.indexWhere((element) => element.path == file.path);
 
     int previousMusicIndex =
         (index - 1 + musicFiles.length) % musicFiles.length;
     File previousMusicFile = musicFiles[previousMusicIndex];
 
-    nagivateToNewPlayer(context, previousMusicFile, 1);
-  }
-
-  void nagivateToNewPlayer(context, File music, int direction) {
-    final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-    final playlistProvider =
-        Provider.of<PlaylistProvider>(context, listen: false);
-
-    PlayerUI player = PlayerUI();
-    playlistProvider.setCurrent(music.path);
-
     PlayerUI currentPlayer = playerProvider.player;
     currentPlayer.player.pause();
+
+    playlistProvider.setCurrent(previousMusicFile.path);
+  }
+
+  void nagivateToNewPlayer(context, int direction) {
+    final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+
+    PlayerUI player = PlayerUI();
 
     Navigator.push(
         context,
@@ -177,9 +186,11 @@ class _PlayerUIState extends State<PlayerUI> {
                     onPanUpdate: (details) {
                       if (details.delta.dx.abs() > details.delta.dy.abs()) {
                         if (details.delta.dx < 0) {
-                          skipNext(context);
+                          playNext();
+                          nagivateToNewPlayer(context, 0);
                         } else if (details.delta.dx > 0) {
-                          skipPrevious();
+                          playPrevious();
+                          nagivateToNewPlayer(context, 1);
                         }
                       }
                     },
@@ -231,7 +242,10 @@ class _PlayerUIState extends State<PlayerUI> {
                         ),
                       ),
                       GestureDetector(
-                          onTap: () => {skipPrevious()},
+                          onTap: () {
+                            playPrevious();
+                            nagivateToNewPlayer(context, 1);
+                          },
                           child: Icon(Icons.skip_previous)),
                       ElevatedButton(
                         onPressed: () {
@@ -243,7 +257,10 @@ class _PlayerUIState extends State<PlayerUI> {
                             value.isPlaying ? Icons.pause : Icons.play_arrow),
                       ),
                       GestureDetector(
-                          onTap: () => {skipNext(context)},
+                          onTap: () {
+                            playNext();
+                            nagivateToNewPlayer(context, 0);
+                          },
                           child: Icon(Icons.skip_next)),
                       GestureDetector(
                         onTap: handleLoop,
