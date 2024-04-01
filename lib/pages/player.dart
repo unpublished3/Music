@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
+import "dart:math";
+
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
@@ -43,7 +45,7 @@ class _PlayerUIState extends State<PlayerUI> {
       }
     });
 
-    audioPlayer.onPlayerComplete.listen((event) async {
+    audioPlayer.onPlayerComplete.listen((event) {
       if (!playerStatusProvider.repeat) {
         skipNext(context);
       }
@@ -193,16 +195,13 @@ class _PlayerUIState extends State<PlayerUI> {
                   Column(
                     children: [
                       Slider(
-                        onChanged: (double value) async {
-                          await audioPlayer.seek(Duration(
-                              seconds: seekLocation(
-                                  value, playerStatusProvider.duration)));
-                        },
-                        value: value.percentageComplete >= 0 &&
-                                value.percentageComplete <= 1
-                            ? value.percentageComplete
-                            : 0,
-                      ),
+                          onChanged: (double value) async {
+                            await audioPlayer.seek(Duration(
+                                seconds: seekLocation(
+                                    value, playerStatusProvider.duration)));
+                          },
+                          value:
+                              min(playerStatusProvider.percentageComplete, 1)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
