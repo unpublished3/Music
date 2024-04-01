@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
-import "dart:math";
-
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
@@ -14,6 +12,7 @@ import "package:page_transition/page_transition.dart";
 import "package:provider/provider.dart";
 
 class PlayerUI extends StatefulWidget {
+  final player = AudioPlayer();
   PlayerUI({super.key});
 
   @override
@@ -22,15 +21,12 @@ class PlayerUI extends StatefulWidget {
 
 class _PlayerUIState extends State<PlayerUI> {
   late PlayerStatusProvider playerStatusProvider;
-  late AudioPlayer audioPlayer;
   late File file;
 
   @override
   void initState() {
     super.initState();
     file = File(Provider.of<PlaylistProvider>(context, listen: false).current);
-    audioPlayer =
-        Provider.of<PlayerProvider>(context, listen: false).audioPlayer;
 
     setUrl();
 
@@ -38,24 +34,30 @@ class _PlayerUIState extends State<PlayerUI> {
         Provider.of<PlayerStatusProvider>(context, listen: false);
     playerStatusProvider.set(context, file.path);
 
-    audioPlayer.onPositionChanged.listen((newPostion) {
+    widget.player.onPositionChanged.listen((newPostion) {
+      if (newPostion >= playerStatusProvider.duration &&
+          !playerStatusProvider.repeat &&
+          mounted) {
+        skipNext(context);
+      }
+
       if (mounted) {
         playerStatusProvider.changePosition(
             newPostion, playerStatusProvider.duration);
       }
     });
 
-    audioPlayer.onPlayerComplete.listen((event) {
-      if (!playerStatusProvider.repeat) {
+    widget.player.onPlayerComplete.listen((event) async {
+      if (!playerStatusProvider.repeat && mounted) {
         skipNext(context);
       }
     });
   }
 
   void setUrl() async {
-    await audioPlayer.setSourceDeviceFile(file.path);
+    await widget.player.setSourceDeviceFile(file.path);
     if (mounted) {
-      playerStatusProvider.alterPlayStatus(audioPlayer);
+      playerStatusProvider.alterPlayStatus(widget.player);
     }
   }
 
@@ -98,9 +100,11 @@ class _PlayerUIState extends State<PlayerUI> {
     final playlistProvider =
         Provider.of<PlaylistProvider>(context, listen: false);
 
-    audioPlayer.pause();
     PlayerUI player = PlayerUI();
     playlistProvider.setCurrent(music.path);
+
+    PlayerUI currentPlayer = playerProvider.player;
+    currentPlayer.player.pause();
 
     Navigator.push(
         context,
@@ -125,9 +129,9 @@ class _PlayerUIState extends State<PlayerUI> {
   void handleLoop() {
     playerStatusProvider.alterRepetition();
     if (playerStatusProvider.repeat) {
-      audioPlayer.setReleaseMode(ReleaseMode.loop);
+      widget.player.setReleaseMode(ReleaseMode.loop);
     } else {
-      audioPlayer.setReleaseMode(ReleaseMode.release);
+      widget.player.setReleaseMode(ReleaseMode.release);
     }
   }
 
@@ -195,13 +199,13 @@ class _PlayerUIState extends State<PlayerUI> {
                   Column(
                     children: [
                       Slider(
-                          onChanged: (double value) async {
-                            await audioPlayer.seek(Duration(
-                                seconds: seekLocation(
-                                    value, playerStatusProvider.duration)));
-                          },
-                          value:
-                              min(playerStatusProvider.percentageComplete, 1)),
+                        onChanged: (double value) async {
+                          await widget.player.seek(Duration(
+                              seconds: seekLocation(
+                                  value, playerStatusProvider.duration)));
+                        },
+                        value: value.percentageComplete,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -229,7 +233,7 @@ class _PlayerUIState extends State<PlayerUI> {
                       ElevatedButton(
                         onPressed: () {
                           if (mounted) {
-                            playerStatusProvider.alterPlayStatus(audioPlayer);
+                            playerStatusProvider.alterPlayStatus(widget.player);
                           }
                         },
                         child: Icon(
