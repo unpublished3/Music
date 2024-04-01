@@ -54,7 +54,8 @@ class ListUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String current = Provider.of<PlaylistProvider>(context).current;
+    String current =
+        Provider.of<PlaylistProvider>(context).current;
 
     return FutureBuilder<void>(
       future: getMetadata(context),
