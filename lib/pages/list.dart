@@ -44,8 +44,9 @@ class ListUI extends StatelessWidget {
     }
 
     PlayerUI player = PlayerUI();
+    playerProvider.player.player.pause();
+
     playlistProvider.setCurrent(file.path);
-    playerStatusProvider.alterPlayStatus(playerProvider.audioPlayer);
 
     Navigator.push(context,
         PageTransition(child: player, type: PageTransitionType.bottomToTop));
@@ -54,8 +55,7 @@ class ListUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String current =
-        Provider.of<PlaylistProvider>(context).current;
+    String current = Provider.of<PlaylistProvider>(context).current;
 
     return FutureBuilder<void>(
       future: getMetadata(context),

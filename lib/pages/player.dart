@@ -10,6 +10,7 @@ import "package:music/providers/playlist_provider.dart";
 import "package:music/utils/format_data.dart" as formatter;
 import "package:page_transition/page_transition.dart";
 import "package:provider/provider.dart";
+import "package:workmanager/workmanager.dart";
 
 class PlayerUI extends StatefulWidget {
   final player = AudioPlayer();
@@ -69,6 +70,8 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void skipNext(context) {
+    Workmanager().registerOneOffTask("1", "skipNext");
+
     List<File> musicFiles =
         Provider.of<PlaylistProvider>(context, listen: false).playlist;
     int index = musicFiles.indexWhere((element) => element.path == file.path);
