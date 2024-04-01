@@ -4,6 +4,7 @@ import "dart:math";
 
 import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
+import "package:just_audio_background/just_audio_background.dart";
 import 'dart:io';
 import "package:music/providers/metadata_provider.dart";
 import "package:music/providers/player_position_provider.dart";
@@ -70,8 +71,10 @@ class _PlayerUIState extends State<PlayerUI> {
 
   void setUrl() async {
     if (widget.player.duration == null) {
-      await widget.player.setFilePath(widget.file.path);
+      await widget.player.setAudioSource(AudioSource.file(widget.file.path,
+          tag: MediaItem(id: "1", title: "Music")));
     }
+
     if (mounted) {
       playerPositionProvider.alterPlayStatus(widget.player);
     }
