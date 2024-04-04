@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/home.dart';
 import 'package:music/providers/files_provider.dart';
@@ -15,14 +14,9 @@ import 'dart:io' show Platform;
 
 import 'package:provider/provider.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   MetadataGod.initialize();
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Music Flutter',
-    androidNotificationOngoing: true,
-  );
   runApp(MyApp());
 }
 

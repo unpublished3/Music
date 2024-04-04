@@ -59,7 +59,7 @@ class _PlayerUIState extends State<PlayerUI> {
     });
 
     widget.player.positionStream.listen((newPostion) {
-      if (Platform.isLinux && newPostion.inSeconds == duration.inSeconds) {
+      if (newPostion.inSeconds >= duration.inSeconds) {
         skipNext(context);
       }
 
