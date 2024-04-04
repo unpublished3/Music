@@ -55,12 +55,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PlayerStatusProvider())
       ],
       child: MaterialApp(
-        // initialRoute: "/home",
-        // routes: {
-        //   "/home": (context) => MobileHome(
-        //         directory: "/storage/emulated/0/Download",
-        //       )
-        // },
         debugShowCheckedModeBanner: false,
         home: Platform.isAndroid
             ? FutureBuilder<bool>(
