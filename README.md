@@ -1,7 +1,7 @@
 # Music
 
 ## Project Description
-Music is a music player written in flutter. It has support for android and linux and may work on windows (Untested).
+Music is a music player written in flutter for CS50 final project. It has support for android and linux and may work on windows (Untested).
 
 ## File Description
 ### main.dart
@@ -103,3 +103,5 @@ Providers are classes that store the state of the application. They extend the c
 - [ ]  Create Playlists
 - [ ]  Good Looking Interface
 Currently, stuck on background autoskip. I've tried multiple approaches with varying levels of success. Remaining taks on the todo list are on hold until I can figure it out.
+
+## Video Url: https://youtu.be/cleOfCcZPQI
