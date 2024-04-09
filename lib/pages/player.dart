@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
+import "dart:math";
+
 import "package:flutter/material.dart";
 import 'dart:io';
 import "package:audioplayers/audioplayers.dart";
@@ -217,12 +219,15 @@ class _PlayerUIState extends State<PlayerUI> {
                               seconds: seekLocation(
                                   value, playerStatusProvider.duration)));
                         },
-                        value: value.percentageComplete,
+                        value: min(value.percentageComplete, 1),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(formatter.formatDuration(value.current)),
+                          value.current > playerStatusProvider.duration
+                              ? Text(formatter.formatDuration(
+                                  playerStatusProvider.duration))
+                              : Text(formatter.formatDuration(value.current)),
                           Text(formatter
                               .formatDuration(playerStatusProvider.duration))
                         ],
@@ -249,7 +254,8 @@ class _PlayerUIState extends State<PlayerUI> {
                       ElevatedButton(
                         onPressed: () {
                           if (mounted) {
-                            playerStatusProvider.alterPlayStatus(playerProvider.audioPlayer);
+                            playerStatusProvider
+                                .alterPlayStatus(playerProvider.audioPlayer);
                           }
                         },
                         child: Icon(
