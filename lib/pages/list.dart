@@ -44,7 +44,7 @@ class ListUI extends StatelessWidget {
     }
 
     PlayerUI player = PlayerUI();
-    playerProvider.player.player.pause();
+    playerProvider.audioPlayer.pause();
 
     playlistProvider.setCurrent(file.path);
 

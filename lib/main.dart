@@ -13,23 +13,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
 import 'package:provider/provider.dart';
-import 'package:workmanager/workmanager.dart';
-
-@pragma('vm:entry-point')
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) {
-    return Future.value(true);
-  });
-}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   MetadataGod.initialize();
-  Workmanager().initialize(
-      callbackDispatcher,
-      isInDebugMode:
-          true
-      );
   runApp(MyApp());
 }
 
