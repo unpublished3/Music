@@ -34,7 +34,7 @@ class _PlayerUIState extends State<PlayerUI> {
         Provider.of<PlayerStatusProvider>(context, listen: false);
     playerProvider = Provider.of<PlayerProvider>(context, listen: false);
 
-    setUrl();
+    playerProvider.setUrl(filePath: file.path);
 
     playerStatusProvider.set(context, file.path);
 
@@ -60,12 +60,13 @@ class _PlayerUIState extends State<PlayerUI> {
     });
   }
 
-  void setUrl() async {
-    await playerProvider.audioPlayer.setSourceDeviceFile(file.path);
-    if (mounted) {
-      playerStatusProvider.alterPlayStatus(playerProvider.audioPlayer);
-    }
-  }
+  // void setUrl() async {
+  //   print(file.path);
+  //   await playerProvider.audioPlayer.setSourceDeviceFile(file.path);
+  //   if (mounted) {
+  //     playerStatusProvider.alterPlayStatus(playerProvider.audioPlayer);
+  //   }
+  // }
 
   int seekLocation(double value, Duration? duration) {
     if (duration != null) {
@@ -125,7 +126,9 @@ class _PlayerUIState extends State<PlayerUI> {
             type: direction == 1
                 ? PageTransitionType.leftToRightWithFade
                 : PageTransitionType.rightToLeftWithFade));
-    playerProvider.changePlayer(newPlayer: player);
+    playerProvider.changePlayer(
+      newPlayer: player,
+    );
   }
 
   void nagivateToHome() {

@@ -28,7 +28,7 @@ class PlayerStatusProvider extends ChangeNotifier {
 
     _current = Duration.zero;
     _percentageComplete = 0;
-    _isPlaying = false;
+    _isPlaying = true;
     _repeat = false;
 
     if (map != null) {
