@@ -51,6 +51,7 @@ class ListUI extends StatelessWidget {
     Navigator.push(context,
         PageTransition(child: player, type: PageTransitionType.bottomToTop));
     playerProvider.changePlayer(newPlayer: player);
+    playerProvider.setUrl(filePath: file.path);
   }
 
   @override

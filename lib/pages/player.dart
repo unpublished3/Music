@@ -34,8 +34,6 @@ class _PlayerUIState extends State<PlayerUI> {
         Provider.of<PlayerStatusProvider>(context, listen: false);
     playerProvider = Provider.of<PlayerProvider>(context, listen: false);
 
-    playerProvider.setUrl(filePath: file.path);
-
     playerStatusProvider.set(context, file.path);
 
     playerProvider.audioPlayer.onPositionChanged.listen((newPostion) {
@@ -59,14 +57,6 @@ class _PlayerUIState extends State<PlayerUI> {
       }
     });
   }
-
-  // void setUrl() async {
-  //   print(file.path);
-  //   await playerProvider.audioPlayer.setSourceDeviceFile(file.path);
-  //   if (mounted) {
-  //     playerStatusProvider.alterPlayStatus(playerProvider.audioPlayer);
-  //   }
-  // }
 
   int seekLocation(double value, Duration? duration) {
     if (duration != null) {
@@ -93,7 +83,9 @@ class _PlayerUIState extends State<PlayerUI> {
 
     playerProvider.audioPlayer.pause();
 
+    print("\n\n\n\n\n\n\n\n\n\n\n\na\n\n\n\n\n\n\n\n\n");
     playlistProvider.setCurrent(nextMusicFile.path);
+    playerProvider.setUrl(filePath: nextMusicFile.path);
   }
 
   void playPrevious() {
@@ -112,6 +104,7 @@ class _PlayerUIState extends State<PlayerUI> {
     playerProvider.audioPlayer.pause();
 
     playlistProvider.setCurrent(previousMusicFile.path);
+    playerProvider.setUrl(filePath: previousMusicFile.path);
   }
 
   void nagivateToNewPlayer(context, int direction) {
