@@ -83,7 +83,6 @@ class _PlayerUIState extends State<PlayerUI> {
 
     playerProvider.audioPlayer.pause();
 
-    print("\n\n\n\n\n\n\n\n\n\n\n\na\n\n\n\n\n\n\n\n\n");
     playlistProvider.setCurrent(nextMusicFile.path);
     playerProvider.setUrl(filePath: nextMusicFile.path);
   }
@@ -112,7 +111,7 @@ class _PlayerUIState extends State<PlayerUI> {
 
     PlayerUI player = PlayerUI();
 
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         PageTransition(
             child: player,
