@@ -72,7 +72,7 @@ class _PlayerUIState extends State<PlayerUI> {
         Provider.of<PlaylistProvider>(context, listen: false);
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
 
-    int index = musicFiles.indexWhere((element) => element.path == file.path);
+    int index = musicFiles.indexWhere((element) => element.path == playlistProvider.current);
 
     if (index == musicFiles.length) {
       index = -1;
@@ -95,7 +95,7 @@ class _PlayerUIState extends State<PlayerUI> {
         Provider.of<PlaylistProvider>(context, listen: false);
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
 
-    int index = musicFiles.indexWhere((element) => element.path == file.path);
+    int index = musicFiles.indexWhere((element) => element.path == playlistProvider.current);
 
     int previousMusicIndex =
         (index - 1 + musicFiles.length) % musicFiles.length;
@@ -104,7 +104,7 @@ class _PlayerUIState extends State<PlayerUI> {
     playerProvider.audioPlayer.pause();
 
     playlistProvider.setCurrent(previousMusicFile.path);
-    playerProvider.setUrl(filePath: previousMusicFile.path);
+    playerProvider.setUrl(filePath: playlistProvider.current);
   }
 
   void nagivateToNewPlayer(context, int direction) {
