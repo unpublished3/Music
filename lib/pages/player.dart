@@ -81,8 +81,6 @@ class _PlayerUIState extends State<PlayerUI> {
     int nextMusicIndex = (index + 1) % musicFiles.length;
     File nextMusicFile = musicFiles[nextMusicIndex];
 
-    playerProvider.audioPlayer.pause();
-
     playlistProvider.setCurrent(nextMusicFile.path);
     playerProvider.setUrl(filePath: nextMusicFile.path);
   }
@@ -99,8 +97,6 @@ class _PlayerUIState extends State<PlayerUI> {
     int previousMusicIndex =
         (index - 1 + musicFiles.length) % musicFiles.length;
     File previousMusicFile = musicFiles[previousMusicIndex];
-
-    playerProvider.audioPlayer.pause();
 
     playlistProvider.setCurrent(previousMusicFile.path);
     playerProvider.setUrl(filePath: playlistProvider.current);
