@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/home.dart';
@@ -8,13 +9,24 @@ import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_status_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
+import 'package:music/utils/audio_hanlder.dart';
 import 'package:music/utils/directory_selector.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
 import 'package:provider/provider.dart';
 
-void main() {
+late AudioHandler _audioHandler;
+
+Future<void> main() async {
+  _audioHandler = await AudioService.init(
+    builder: () => AudioPlayerHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.myaudio.channel',
+      androidNotificationChannelName: 'Music',
+      androidNotificationOngoing: true,
+    ),
+  );
   WidgetsFlutterBinding.ensureInitialized();
   MetadataGod.initialize();
   runApp(MyApp());
