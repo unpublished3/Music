@@ -47,13 +47,14 @@ class PlayerStatusProvider extends ChangeNotifier {
   }
 
   void alterPlayStatus(AudioPlayer player) async {
-    if (isPlaying) {
+    _isPlaying = !_isPlaying;
+
+    if (!isPlaying) {
       await player.pause();
     } else {
       await player.resume();
     }
 
-    _isPlaying = !_isPlaying;
     notifyListeners();
   }
 
