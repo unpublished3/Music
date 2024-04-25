@@ -1,5 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:music/pages/player.dart';
 
 class PlayerProvider extends ChangeNotifier {
@@ -15,7 +15,7 @@ class PlayerProvider extends ChangeNotifier {
   }
 
   void setUrl({required String filePath}) async {
-    await _audioPlayer.setSourceDeviceFile(filePath);
-    await audioPlayer.resume();
+    await _audioPlayer.setFilePath(filePath);
+    await audioPlayer.play();
   }
 }

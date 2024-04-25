@@ -3,8 +3,8 @@
 import "dart:math";
 
 import "package:flutter/material.dart";
+import "package:just_audio/just_audio.dart";
 import 'dart:io';
-import "package:audioplayers/audioplayers.dart";
 import "package:music/providers/player_status_provider.dart";
 import "package:music/providers/player_provider.dart";
 import "package:music/providers/playlist_provider.dart";
@@ -36,10 +36,18 @@ class _PlayerUIState extends State<PlayerUI> {
 
     playerStatusProvider.set(context, file.path);
 
-    playerProvider.audioPlayer.onPositionChanged.listen((newPostion) {
-      if (newPostion >= playerStatusProvider.duration &&
-          !playerStatusProvider.repeat &&
-          mounted) {
+    playerProvider.audioPlayer.playbackEventStream.listen((event) async {
+      if (event.processingState == ProcessingState.completed) {
+        if (!playerStatusProvider.repeat && mounted) {
+          playNext();
+          nagivateToNewPlayer(context, 0);
+        }
+      }
+    });
+
+    playerProvider.audioPlayer.positionStream.listen((newPostion) {
+      if (!playerStatusProvider.repeat &&
+          newPostion.inSeconds >= playerStatusProvider.duration.inSeconds) {
         playNext();
         nagivateToNewPlayer(context, 0);
       }
@@ -47,13 +55,6 @@ class _PlayerUIState extends State<PlayerUI> {
       if (mounted) {
         playerStatusProvider.changePosition(
             newPostion, playerStatusProvider.duration);
-      }
-    });
-
-    playerProvider.audioPlayer.onPlayerComplete.listen((event) async {
-      if (!playerStatusProvider.repeat && mounted) {
-        playNext();
-        nagivateToNewPlayer(context, 0);
       }
     });
   }
@@ -72,7 +73,8 @@ class _PlayerUIState extends State<PlayerUI> {
         Provider.of<PlaylistProvider>(context, listen: false);
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
 
-    int index = musicFiles.indexWhere((element) => element.path == playlistProvider.current);
+    int index = musicFiles
+        .indexWhere((element) => element.path == playlistProvider.current);
 
     if (index == musicFiles.length) {
       index = -1;
@@ -92,7 +94,8 @@ class _PlayerUIState extends State<PlayerUI> {
         Provider.of<PlaylistProvider>(context, listen: false);
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
 
-    int index = musicFiles.indexWhere((element) => element.path == playlistProvider.current);
+    int index = musicFiles
+        .indexWhere((element) => element.path == playlistProvider.current);
 
     int previousMusicIndex =
         (index - 1 + musicFiles.length) % musicFiles.length;
@@ -132,9 +135,10 @@ class _PlayerUIState extends State<PlayerUI> {
   void handleLoop() {
     playerStatusProvider.alterRepetition();
     if (playerStatusProvider.repeat) {
-      playerProvider.audioPlayer.setReleaseMode(ReleaseMode.loop);
+      // playerProvider.audioPlayer.setReleaseMode(ReleaseMode.loop);
+      playerProvider.audioPlayer.setLoopMode(LoopMode.one);
     } else {
-      playerProvider.audioPlayer.setReleaseMode(ReleaseMode.release);
+      playerProvider.audioPlayer.setLoopMode(LoopMode.off);
     }
   }
 

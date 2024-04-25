@@ -1,5 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +52,7 @@ class PlayerStatusProvider extends ChangeNotifier {
     if (!isPlaying) {
       await player.pause();
     } else {
-      await player.resume();
+      await player.play();
     }
 
     notifyListeners();
