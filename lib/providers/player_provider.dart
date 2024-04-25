@@ -4,10 +4,12 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:music/pages/player.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class PlayerProvider extends ChangeNotifier {
   PlayerUI _player = PlayerUI();
   final AudioPlayer _audioPlayer = AudioPlayer();
+  final uuid = const Uuid();
 
   PlayerUI get player => _player;
   AudioPlayer get audioPlayer => _audioPlayer;
@@ -26,7 +28,7 @@ class PlayerProvider extends ChangeNotifier {
       await _audioPlayer.setAudioSource(AudioSource.uri(
         Uri.file(filePath),
         // ignore: prefer_const_constructors
-        tag: MediaItem(id: "1", title: map.trackName, album: map.artistName),
+        tag: MediaItem(id: uuid.v1(), title: map.trackName, album: map.artistName),
       ));
     }
 
