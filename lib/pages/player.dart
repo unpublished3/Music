@@ -47,7 +47,7 @@ class _PlayerUIState extends State<PlayerUI> {
 
     playerProvider.audioPlayer.positionStream.listen((newPostion) {
       if (!playerStatusProvider.repeat &&
-          newPostion.inSeconds >= playerStatusProvider.duration.inSeconds) {
+          newPostion.inSeconds > playerStatusProvider.duration.inSeconds) {
         playNext();
         nagivateToNewPlayer(context, 0);
       }
