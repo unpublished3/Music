@@ -84,7 +84,7 @@ class _PlayerUIState extends State<PlayerUI> {
     File nextMusicFile = musicFiles[nextMusicIndex];
 
     playlistProvider.setCurrent(nextMusicFile.path);
-    playerProvider.setUrl(filePath: nextMusicFile.path);
+    playerProvider.setUrl(context, filePath: nextMusicFile.path);
   }
 
   void playPrevious() {
@@ -102,7 +102,7 @@ class _PlayerUIState extends State<PlayerUI> {
     File previousMusicFile = musicFiles[previousMusicIndex];
 
     playlistProvider.setCurrent(previousMusicFile.path);
-    playerProvider.setUrl(filePath: playlistProvider.current);
+    playerProvider.setUrl(context, filePath: playlistProvider.current);
   }
 
   void nagivateToNewPlayer(context, int direction) {

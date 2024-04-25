@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, prefer_const_constructors_in_immutables
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/home.dart';
 import 'package:music/providers/files_provider.dart';
@@ -16,6 +16,11 @@ import 'dart:io' show Platform;
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.music.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
   WidgetsFlutterBinding.ensureInitialized();
   MetadataGod.initialize();
   runApp(MyApp());

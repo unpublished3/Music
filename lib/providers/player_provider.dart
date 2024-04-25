@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:music/pages/player.dart';
+import 'package:music/providers/metadata_provider.dart';
+import 'package:provider/provider.dart';
 
 class PlayerProvider extends ChangeNotifier {
   PlayerUI _player = PlayerUI();
@@ -14,8 +17,19 @@ class PlayerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUrl({required String filePath}) async {
-    await _audioPlayer.setFilePath(filePath);
+  void setUrl(context, {required String filePath}) async {
+    RequiredMetadata? map =
+        Provider.of<MetadataProvider>(context, listen: false)
+            .metadataMap[filePath];
+
+    if (map != null) {
+      await _audioPlayer.setAudioSource(AudioSource.uri(
+        Uri.file(filePath),
+        // ignore: prefer_const_constructors
+        tag: MediaItem(id: "1", title: map.trackName, album: map.artistName),
+      ));
+    }
+
     await audioPlayer.play();
   }
 }
