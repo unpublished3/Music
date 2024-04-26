@@ -1,6 +1,8 @@
+import 'dart:io'; 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/player.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:provider/provider.dart';
@@ -23,15 +25,34 @@ class PlayerProvider extends ChangeNotifier {
     RequiredMetadata? map =
         Provider.of<MetadataProvider>(context, listen: false)
             .metadataMap[filePath];
+      final audioMetadata = await MetadataGod.readMetadata(file: filePath);
+      Picture? picture = audioMetadata.picture;
 
-    if (map != null) {
-      await _audioPlayer.setAudioSource(AudioSource.uri(
-        Uri.file(filePath),
-        // ignore: prefer_const_constructors
-        tag: MediaItem(id: uuid.v1(), title: map.trackName, album: map.artistName),
-      ));
+
+    if (map != null && picture != null) {
+      String imagePath =  await _createFile(picture);
+      imagePath = "file://$imagePath";
+
+      await _audioPlayer.setAudioSource(AudioSource.uri(Uri.file(filePath),
+          // ignore: prefer_const_constructors
+          tag: MediaItem(
+            id: uuid.v1(),
+            title: map.trackName,
+            album: map.artistName,
+            artUri: Uri.parse(imagePath)),
+          ));
     }
 
     await audioPlayer.play();
+  }
+
+  Future<String> _createFile(Picture albumArt) async {
+    final tempDir = Directory.systemTemp;
+    final image = albumArt.data;
+
+    final File file = File("${tempDir.path}/albumArt.jpg");
+    file.writeAsBytes(image);
+
+    return file.path;
   }
 }
