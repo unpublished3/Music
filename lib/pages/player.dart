@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, must_be_immutable, prefer_const_constructors_in_immutables
 
+import "dart:async";
 import "dart:math";
 
 import "package:flutter/material.dart";
@@ -24,6 +25,7 @@ class _PlayerUIState extends State<PlayerUI> {
   late PlayerStatusProvider playerStatusProvider;
   late PlayerProvider playerProvider;
   late File file;
+  late Stream<Duration> positionSubscription;
 
   @override
   void initState() {
@@ -33,21 +35,14 @@ class _PlayerUIState extends State<PlayerUI> {
     playerStatusProvider =
         Provider.of<PlayerStatusProvider>(context, listen: false);
     playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-
     playerStatusProvider.set(context, file.path);
 
-    playerProvider.audioPlayer.playbackEventStream.listen((event) async {
-      if (event.processingState == ProcessingState.completed) {
-        if (!playerStatusProvider.repeat && mounted) {
-          playNext();
-          nagivateToNewPlayer(context, 0);
-        }
-      }
-    });
+    positionSubscription = playerProvider.audioPlayer.positionStream;
 
-    playerProvider.audioPlayer.positionStream.listen((newPostion) {
-      if (!playerStatusProvider.repeat &&
-          newPostion.inSeconds > playerStatusProvider.duration.inSeconds) {
+    positionSubscription.listen((newPostion) {
+      final duration =
+          playerProvider.audioPlayer.duration ?? Duration(seconds: 10000000);
+      if (!playerStatusProvider.repeat && newPostion >= duration) {
         playNext();
         nagivateToNewPlayer(context, 0);
       }
@@ -67,6 +62,8 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void playNext() {
+    positionSubscription.drain();
+
     List<File> musicFiles =
         Provider.of<PlaylistProvider>(context, listen: false).playlist;
     final playlistProvider =
@@ -84,6 +81,7 @@ class _PlayerUIState extends State<PlayerUI> {
     File nextMusicFile = musicFiles[nextMusicIndex];
 
     playlistProvider.setCurrent(nextMusicFile.path);
+    playerProvider.audioPlayer.pause();
     playerProvider.setUrl(context, filePath: nextMusicFile.path);
   }
 
