@@ -32,6 +32,7 @@ class PlayerProvider extends ChangeNotifier {
     if (map != null && picture != null) {
       String imagePath =  await _createFile(picture);
       imagePath = "file://$imagePath";
+      print("$imagePath\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
       await _audioPlayer.setAudioSource(AudioSource.uri(Uri.file(filePath),
           // ignore: prefer_const_constructors
@@ -50,7 +51,7 @@ class PlayerProvider extends ChangeNotifier {
     final tempDir = Directory.systemTemp;
     final image = albumArt.data;
 
-    final File file = File("${tempDir.path}/albumArt.jpg");
+    final File file = File("${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg");
     file.writeAsBytes(image);
 
     return file.path;
