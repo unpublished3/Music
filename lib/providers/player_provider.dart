@@ -1,4 +1,4 @@
-import 'dart:io'; 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -11,7 +11,8 @@ import 'package:uuid/uuid.dart';
 class PlayerProvider extends ChangeNotifier {
   PlayerUI _player = PlayerUI();
   final AudioPlayer _audioPlayer = AudioPlayer();
-  final uuid = const Uuid();
+  final _uuid = const Uuid();
+  String? previousPath;
 
   PlayerUI get player => _player;
   AudioPlayer get audioPlayer => _audioPlayer;
@@ -22,26 +23,31 @@ class PlayerProvider extends ChangeNotifier {
   }
 
   void setUrl(context, {required String filePath}) async {
+    if (previousPath != null) {
+      File fileToDelete = File(previousPath ?? "");
+      await fileToDelete.delete();
+    }
+
     RequiredMetadata? map =
         Provider.of<MetadataProvider>(context, listen: false)
             .metadataMap[filePath];
-      final audioMetadata = await MetadataGod.readMetadata(file: filePath);
-      Picture? picture = audioMetadata.picture;
-
+    final audioMetadata = await MetadataGod.readMetadata(file: filePath);
+    Picture? picture = audioMetadata.picture;
 
     if (map != null && picture != null) {
-      String imagePath =  await _createFile(picture);
+      String imagePath = await _createFile(picture);
+      previousPath = imagePath;
       imagePath = "file://$imagePath";
-      print("$imagePath\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
-      await _audioPlayer.setAudioSource(AudioSource.uri(Uri.file(filePath),
-          // ignore: prefer_const_constructors
-          tag: MediaItem(
-            id: uuid.v1(),
+      await _audioPlayer.setAudioSource(AudioSource.uri(
+        Uri.file(filePath),
+        // ignore: prefer_const_constructors
+        tag: MediaItem(
+            id: _uuid.v1(),
             title: map.trackName,
             album: map.artistName,
             artUri: Uri.parse(imagePath)),
-          ));
+      ));
     }
 
     await audioPlayer.play();
@@ -49,9 +55,11 @@ class PlayerProvider extends ChangeNotifier {
 
   Future<String> _createFile(Picture albumArt) async {
     final tempDir = Directory.systemTemp;
+    print("${tempDir.path}\n\n\n\n\n\n\n\n\n\n\n");
     final image = albumArt.data;
 
-    final File file = File("${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg");
+    final File file =
+        File("${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg");
     file.writeAsBytes(image);
 
     return file.path;
