@@ -107,7 +107,7 @@ class ListElement extends StatelessWidget {
       padding: const EdgeInsets.only(right: 20, left: 20, top: 8, bottom: 7),
       child: Container(
         padding: EdgeInsets.all(12),
-        height: MediaQuery.of(context).size.height * 0.1,
+        height: MediaQuery.of(context).size.height * 0.09,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black, width: 2),
           borderRadius: BorderRadius.circular(12),
@@ -122,7 +122,7 @@ class ListElement extends StatelessWidget {
                 AlbumArt(albumArt: albumArt),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 0),
                   child: Column(
                     children: [Text(trackName), Text(artistName)],
                   ),
@@ -148,10 +148,10 @@ class AlbumArt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQuery.of(context).size.height * 0.07,
+        width: MediaQuery.of(context).size.height * 0.06,
         decoration: BoxDecoration(
           image: DecorationImage(image: albumArt.image, fit: BoxFit.contain),
-          borderRadius: BorderRadius.circular(100),
+          borderRadius: BorderRadius.circular(8),
         ));
   }
 }

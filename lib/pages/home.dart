@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:music/pages/music_list.dart';
@@ -30,8 +31,14 @@ class Home extends StatelessWidget {
           ],
         ),
         body: SafeArea(
-          child: MusicList(
-            directory: directory,
+          child: Column(
+            children: [Divider(height: 1, thickness: 1,),
+              Expanded(
+                child: MusicList(
+                  directory: directory,
+                ),
+              )
+            ],
           ),
         ),
         floatingActionButton: Consumer<PlaylistProvider>(
