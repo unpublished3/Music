@@ -104,7 +104,7 @@ class ListElement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20, left: 20, top: 15, bottom: 0),
+      padding: const EdgeInsets.only(right: 20, left: 20, top: 8, bottom: 7),
       child: Container(
         padding: EdgeInsets.all(12),
         height: MediaQuery.of(context).size.height * 0.1,

@@ -15,10 +15,11 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // String current = Provider.of<PlaylistProvider>(context, listen: false).current;
     return Scaffold(
-        body: MusicList(
-          directory: directory,
+        body: SafeArea(
+          child: MusicList(
+            directory: directory,
+          ),
         ),
         floatingActionButton: Consumer<PlaylistProvider>(
             builder: (context, value, child) => value.current != "none"
@@ -26,6 +27,15 @@ class Home extends StatelessWidget {
                     current: value.current,
                   )
                 : Container()));
+  }
+}
+
+class Header extends StatelessWidget {
+  const Header({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar();
   }
 }
 

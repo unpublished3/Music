@@ -55,7 +55,6 @@ class PlayerProvider extends ChangeNotifier {
 
   Future<String> _createFile(Picture albumArt) async {
     final tempDir = Directory.systemTemp;
-    print("${tempDir.path}\n\n\n\n\n\n\n\n\n\n\n");
     final image = albumArt.data;
 
     final File file =
