@@ -26,6 +26,7 @@ class _PlayerUIState extends State<PlayerUI> {
   late PlayerProvider playerProvider;
   late File file;
   late Stream<Duration> positionSubscription;
+  bool skipped = false;
 
   @override
   void initState() {
@@ -42,9 +43,14 @@ class _PlayerUIState extends State<PlayerUI> {
     positionSubscription.listen((newPostion) {
       final duration =
           playerProvider.audioPlayer.duration ?? Duration(seconds: 10000000);
-      if (!playerStatusProvider.repeat && newPostion >= duration) {
-        playNext();
-        nagivateToNewPlayer(context, 0);
+      if (!playerStatusProvider.repeat && newPostion >= duration && mounted) {
+        if (!skipped) {
+          playNext();
+          nagivateToNewPlayer(context, 0);
+          skipped = true;
+        }
+      } else {
+        skipped = false;
       }
 
       if (mounted) {
@@ -62,7 +68,9 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void playNext() {
-    positionSubscription.drain();
+    // positionSubscription.drain();
+
+    print("Run\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
     List<File> musicFiles =
         Provider.of<PlaylistProvider>(context, listen: false).playlist;
