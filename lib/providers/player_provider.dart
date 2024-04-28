@@ -4,6 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/player.dart';
+import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -23,33 +24,40 @@ class PlayerProvider extends ChangeNotifier {
   }
 
   void setUrl(context, {required String filePath}) async {
-    if (previousPath != null) {
-      File fileToDelete = File(previousPath ?? "");
-      await fileToDelete.delete();
+    List<UriAudioSource> audioSourceList = [];
+
+    FilesProvider filesProvider =
+        Provider.of<FilesProvider>(context, listen: false);
+
+    for (File file in filesProvider.musicFiles) {
+      RequiredMetadata? map =
+          Provider.of<MetadataProvider>(context, listen: false)
+              .metadataMap[file.path];
+      final audioMetadata = await MetadataGod.readMetadata(file: file.path);
+      Picture? picture = audioMetadata.picture;
+
+      if (map != null && picture != null) {
+        String imagePath = await _createFile(picture);
+        previousPath = imagePath;
+        imagePath = "file://$imagePath";
+
+        audioSourceList.add(AudioSource.uri(
+          Uri.file(file.path),
+          // ignore: prefer_const_constructors
+          tag: MediaItem(
+              id: _uuid.v1(),
+              title: map.trackName,
+              album: map.artistName,
+              artUri: Uri.parse(imagePath)),
+        ));
+      }
     }
+    AudioSource playlist = ConcatenatingAudioSource(children: audioSourceList);
+    int index = filesProvider.musicFiles
+        .indexWhere((element) => element.path == filePath);
 
-    RequiredMetadata? map =
-        Provider.of<MetadataProvider>(context, listen: false)
-            .metadataMap[filePath];
-    final audioMetadata = await MetadataGod.readMetadata(file: filePath);
-    Picture? picture = audioMetadata.picture;
 
-    if (map != null && picture != null) {
-      String imagePath = await _createFile(picture);
-      previousPath = imagePath;
-      imagePath = "file://$imagePath";
-
-      await _audioPlayer.setAudioSource(AudioSource.uri(
-        Uri.file(filePath),
-        // ignore: prefer_const_constructors
-        tag: MediaItem(
-            id: _uuid.v1(),
-            title: map.trackName,
-            album: map.artistName,
-            artUri: Uri.parse(imagePath)),
-      ));
-    }
-
+    await audioPlayer.setAudioSource(playlist, initialIndex: index);
     await audioPlayer.play();
   }
 

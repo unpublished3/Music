@@ -45,7 +45,7 @@ class _PlayerUIState extends State<PlayerUI> {
           playerProvider.audioPlayer.duration ?? Duration(seconds: 10000000);
       if (!playerStatusProvider.repeat && newPostion >= duration && mounted) {
         if (!skipped) {
-          playNext();
+          playerProvider.audioPlayer.seekToNext();
           nagivateToNewPlayer(context, 0);
           skipped = true;
         }
@@ -90,7 +90,7 @@ class _PlayerUIState extends State<PlayerUI> {
 
     playlistProvider.setCurrent(nextMusicFile.path);
     playerProvider.audioPlayer.pause();
-    playerProvider.setUrl(context, filePath: nextMusicFile.path);
+    // playerProvider.setUrl(context, filePath: nextMusicFile.path);
   }
 
   void playPrevious() {
@@ -188,7 +188,8 @@ class _PlayerUIState extends State<PlayerUI> {
                     onPanUpdate: (details) {
                       if (details.delta.dx.abs() > details.delta.dy.abs()) {
                         if (details.delta.dx < 0) {
-                          playNext();
+                                    playerProvider.audioPlayer.seekToNext();
+();
                           nagivateToNewPlayer(context, 0);
                         } else if (details.delta.dx > 0) {
                           playPrevious();
@@ -264,7 +265,8 @@ class _PlayerUIState extends State<PlayerUI> {
                       ),
                       GestureDetector(
                           onTap: () {
-                            playNext();
+                                      playerProvider.audioPlayer.seekToNext();
+();
                             nagivateToNewPlayer(context, 0);
                           },
                           child: Icon(Icons.skip_next)),
