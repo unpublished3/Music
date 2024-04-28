@@ -5,6 +5,7 @@ import "dart:math";
 
 import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
+import "package:music/providers/files_provider.dart";
 import 'dart:io';
 import "package:music/providers/player_status_provider.dart";
 import "package:music/providers/player_provider.dart";
@@ -67,52 +68,24 @@ class _PlayerUIState extends State<PlayerUI> {
     return 0;
   }
 
-  void playNext() {
-    // positionSubscription.drain();
-
-    print("Run\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-
-    List<File> musicFiles =
-        Provider.of<PlaylistProvider>(context, listen: false).playlist;
-    final playlistProvider =
-        Provider.of<PlaylistProvider>(context, listen: false);
-    final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-
-    int index = musicFiles
-        .indexWhere((element) => element.path == playlistProvider.current);
-
-    if (index == musicFiles.length) {
-      index = -1;
-    }
-
-    int nextMusicIndex = (index + 1) % musicFiles.length;
-    File nextMusicFile = musicFiles[nextMusicIndex];
-
-    playlistProvider.setCurrent(nextMusicFile.path);
-    playerProvider.audioPlayer.pause();
-    // playerProvider.setUrl(context, filePath: nextMusicFile.path);
-  }
-
-  void playPrevious() {
-    List<File> musicFiles =
-        Provider.of<PlaylistProvider>(context, listen: false).playlist;
-    final playlistProvider =
-        Provider.of<PlaylistProvider>(context, listen: false);
-    final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-
-    int index = musicFiles
-        .indexWhere((element) => element.path == playlistProvider.current);
-
-    int previousMusicIndex =
-        (index - 1 + musicFiles.length) % musicFiles.length;
-    File previousMusicFile = musicFiles[previousMusicIndex];
-
-    playlistProvider.setCurrent(previousMusicFile.path);
-    playerProvider.setUrl(context, filePath: playlistProvider.current);
-  }
-
   void nagivateToNewPlayer(context, int direction) {
+    FilesProvider filesProvider =
+        Provider.of<FilesProvider>(context, listen: false);
+    PlaylistProvider playlistProvider = Provider.of<PlaylistProvider>(context, listen: false);
+
     final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+    late int newIndex =
+        playerProvider.audioPlayer.sequenceState?.currentIndex ?? 0;
+    print("$newIndex\n\n\n\n\n");
+    if (direction == 0) {
+      newIndex = (newIndex + 1) % filesProvider.musicFiles.length;
+    } else {
+      newIndex = (newIndex - 1) % filesProvider.musicFiles.length;
+    }
+    print("$newIndex\n\n\n\n\n");
+
+    print("${filesProvider.musicFiles[newIndex]}}\n\n\n\n\n\n\n\n\n\n");
+    playlistProvider.setCurrent(filesProvider.musicFiles[newIndex].path);
 
     PlayerUI player = PlayerUI();
 
@@ -188,11 +161,11 @@ class _PlayerUIState extends State<PlayerUI> {
                     onPanUpdate: (details) {
                       if (details.delta.dx.abs() > details.delta.dy.abs()) {
                         if (details.delta.dx < 0) {
-                                    playerProvider.audioPlayer.seekToNext();
-();
+                          playerProvider.audioPlayer.seekToNext();
+                          ();
                           nagivateToNewPlayer(context, 0);
                         } else if (details.delta.dx > 0) {
-                          playPrevious();
+                          playerProvider.audioPlayer.seekToPrevious();
                           nagivateToNewPlayer(context, 1);
                         }
                       }
@@ -249,7 +222,7 @@ class _PlayerUIState extends State<PlayerUI> {
                       ),
                       GestureDetector(
                           onTap: () {
-                            playPrevious();
+                            playerProvider.audioPlayer.seekToPrevious();
                             nagivateToNewPlayer(context, 1);
                           },
                           child: Icon(Icons.skip_previous)),
@@ -265,8 +238,8 @@ class _PlayerUIState extends State<PlayerUI> {
                       ),
                       GestureDetector(
                           onTap: () {
-                                      playerProvider.audioPlayer.seekToNext();
-();
+                            playerProvider.audioPlayer.seekToNext();
+                            ();
                             nagivateToNewPlayer(context, 0);
                           },
                           child: Icon(Icons.skip_next)),

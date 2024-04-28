@@ -47,8 +47,9 @@ class PlayerProvider extends ChangeNotifier {
           tag: MediaItem(
               id: _uuid.v1(),
               title: map.trackName,
-              album: map.artistName,
-              artUri: Uri.parse(imagePath)),
+              // album: map.artistName,
+              artUri: Uri.parse(imagePath),
+              artist: map.artistName),
         ));
       }
     }
