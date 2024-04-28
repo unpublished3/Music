@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:music/pages/music_list.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';

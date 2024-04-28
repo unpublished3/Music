@@ -56,8 +56,6 @@ class ListUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String current = Provider.of<PlaylistProvider>(context).current;
-
     return FutureBuilder<void>(
       future: getMetadata(context),
       builder: (context, snapshot) {
@@ -69,16 +67,19 @@ class ListUI extends StatelessWidget {
           return Scaffold(body: Center(child: Text('Error1 occurred')));
         } else {
           // Permission granted or denied
-          return GestureDetector(
-              onTap: () => {setPlayer(context)},
-              child: ListElement(
-                  current: current == file.path,
-                  albumArt: requiredMetadata.albumArt,
-                  trackName:
-                      formatter.formatName(requiredMetadata.trackName, 30),
-                  artistName: requiredMetadata.artistName,
-                  trackDuration: formatter
-                      .formatDuration(requiredMetadata.trackDuration)));
+          return Selector<PlaylistProvider, String>(
+            selector: (context, provider) => provider.current,
+            builder: (context, currentMusic, child) => GestureDetector(
+                onTap: () => {setPlayer(context)},
+                child: ListElement(
+                    current: currentMusic == file.path,
+                    albumArt: requiredMetadata.albumArt,
+                    trackName:
+                        formatter.formatName(requiredMetadata.trackName, 30),
+                    artistName: requiredMetadata.artistName,
+                    trackDuration: formatter
+                        .formatDuration(requiredMetadata.trackDuration))),
+          );
         }
       },
     );
