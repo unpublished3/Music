@@ -38,7 +38,6 @@ class _PlayerUIState extends State<PlayerUI> {
     playerStatusProvider =
         Provider.of<PlayerStatusProvider>(context, listen: false);
     playerProvider = Provider.of<PlayerProvider>(context, listen: false);
-    playerStatusProvider.set(context, file.path);
 
     positionSubscription = playerProvider.audioPlayer.positionStream;
 
@@ -77,10 +76,11 @@ class _PlayerUIState extends State<PlayerUI> {
     PlayerProvider playerProvider =
         Provider.of<PlayerProvider>(context, listen: false);
 
-    late int newIndex =
+    int newIndex =
         playerProvider.audioPlayer.sequenceState?.currentIndex ?? 0;
 
-    playlistProvider.setCurrent(filesProvider.musicFiles[newIndex].path);
+    playlistProvider.setCurrent(context, filesProvider.musicFiles[newIndex].path);
+
 
     PlayerUI player = PlayerUI();
 
@@ -94,6 +94,7 @@ class _PlayerUIState extends State<PlayerUI> {
     playerProvider.changePlayer(
       newPlayer: player,
     );
+
   }
 
   void nagivateToHome() {

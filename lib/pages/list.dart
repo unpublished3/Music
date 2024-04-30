@@ -46,7 +46,7 @@ class ListUI extends StatelessWidget {
     PlayerUI player = PlayerUI();
     playerProvider.audioPlayer.pause();
 
-    playlistProvider.setCurrent(file.path);
+    playlistProvider.setCurrent(context, file.path);
 
     Navigator.push(context,
         PageTransition(child: player, type: PageTransitionType.bottomToTop));

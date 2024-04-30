@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:music/pages/music_list.dart';
+import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/player_status_provider.dart';
@@ -9,9 +10,46 @@ import 'package:music/providers/playlist_provider.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   Home({super.key, required this.directory});
   String directory;
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  int? currentIndex;
+  bool skipped = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
+
+    final playerProvider = Provider.of<PlayerProvider>(context, listen: false);
+
+    final filesProvider = Provider.of<FilesProvider>(context, listen: false);
+
+    playerProvider.audioPlayer.playbackEventStream.listen((event) {
+      currentIndex ??= event.currentIndex;
+
+      if (currentIndex != event.currentIndex &&
+          currentIndex != null &&
+          mounted) {
+        if (!skipped) {
+          int newIndex =
+              playerProvider.audioPlayer.sequenceState?.currentIndex ?? 0;
+
+          playlistProvider.setCurrent(
+              context, filesProvider.musicFiles[newIndex].path);
+          skipped = true;
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +68,14 @@ class Home extends StatelessWidget {
         ),
         body: SafeArea(
           child: Column(
-            children: [Divider(height: 1, thickness: 1,),
+            children: [
+              Divider(
+                height: 1,
+                thickness: 1,
+              ),
               Expanded(
                 child: MusicList(
-                  directory: directory,
+                  directory: widget.directory,
                 ),
               )
             ],
@@ -94,7 +136,7 @@ class FloatingImage extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: CircleAvatar(
-          backgroundImage: albumArt.image,
+          backgroundImage: playerStatusProvider.albumArt.image,
         ),
       ),
     );

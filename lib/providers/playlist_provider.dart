@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:music/providers/player_status_provider.dart';
+import 'package:provider/provider.dart';
 
 class PlaylistProvider extends ChangeNotifier {
   final List<File> _playlist = [];
@@ -32,8 +34,12 @@ class PlaylistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrent(String path) {
+  void setCurrent(context, String path) {
+    final playerStatusProvider = Provider.of<PlayerStatusProvider>(context, listen: false);
+
     _current = path;
+    playerStatusProvider.set(context, path);
+
     notifyListeners();
   }
 
