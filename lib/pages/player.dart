@@ -50,7 +50,6 @@ class _PlayerUIState extends State<PlayerUI> {
 
     playerProvider.audioPlayer.playbackEventStream.listen((event) {
       currentIndex ??= event.currentIndex;
-
       if (currentIndex != event.currentIndex && currentIndex != null && mounted) {
         if (!skipped) {
           int direction = currentIndex! < event.currentIndex! ? 0 : 1;
@@ -58,6 +57,10 @@ class _PlayerUIState extends State<PlayerUI> {
           skipped = true;
         }
       }
+    });
+
+    playerProvider.audioPlayer.playingStream.listen((event) {
+      playerStatusProvider.reflectPlayStatusChange(event);
     });
   }
 

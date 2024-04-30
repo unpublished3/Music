@@ -58,6 +58,11 @@ class PlayerStatusProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void reflectPlayStatusChange(bool playing)
+  {
+    _isPlaying = playing;
+  }
+
   void alterRepetition() {
     _repeat = !_repeat;
     notifyListeners();
