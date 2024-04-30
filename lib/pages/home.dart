@@ -36,6 +36,11 @@ class _HomeState extends State<Home> {
     playerProvider.audioPlayer.playbackEventStream.listen((event) {
       currentIndex ??= event.currentIndex;
 
+      if (currentIndex == event.currentIndex)
+      {
+        skipped = false;
+      }
+
       if (currentIndex != event.currentIndex &&
           currentIndex != null &&
           mounted) {
@@ -46,6 +51,7 @@ class _HomeState extends State<Home> {
           playlistProvider.setCurrent(
               context, filesProvider.musicFiles[newIndex].path);
           skipped = true;
+          currentIndex = null;
         }
       }
     });
