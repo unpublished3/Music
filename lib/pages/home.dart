@@ -95,20 +95,20 @@ class Header extends StatefulWidget {
 }
 
 class _HeaderState extends State<Header> {
-  bool _searchActive = false;
-
   @override
   Widget build(BuildContext context) {
+    FilesProvider filesProvider = Provider.of<FilesProvider>(context);
+
     return AppBar(
-      title: !_searchActive
+      title: !filesProvider.searchActive
           ? Padding(padding: EdgeInsets.only(left: 5), child: Text("Music"))
-          : TextField(  ),
+          : TextField(),
       actions: [
         Padding(
             padding: EdgeInsets.only(right: 20),
             child: GestureDetector(
               onTap: () => setState(() {
-                _searchActive = !_searchActive;
+                filesProvider.alterSearch();
               }),
               child: Icon(Icons.search),
             ))
