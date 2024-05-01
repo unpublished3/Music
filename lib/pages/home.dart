@@ -36,8 +36,7 @@ class _HomeState extends State<Home> {
     playerProvider.audioPlayer.playbackEventStream.listen((event) {
       currentIndex ??= event.currentIndex;
 
-      if (currentIndex == event.currentIndex)
-      {
+      if (currentIndex == event.currentIndex) {
         skipped = false;
       }
 
@@ -60,17 +59,9 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title:
-              Padding(padding: EdgeInsets.only(left: 5), child: Text("Music")),
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 20),
-              child: GestureDetector(
-                child: Icon(Icons.search),
-              ),
-            )
-          ],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight * 0.9),
+          child: Header(),
         ),
         body: SafeArea(
           child: Column(
@@ -101,7 +92,17 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar();
+    return AppBar(
+      title: Padding(padding: EdgeInsets.only(left: 5), child: Text("Music")),
+      actions: [
+        Padding(
+          padding: EdgeInsets.only(right: 20),
+          child: GestureDetector(
+            child: Icon(Icons.search),
+          ),
+        )
+      ],
+    );
   }
 }
 
