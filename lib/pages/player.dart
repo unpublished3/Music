@@ -5,7 +5,6 @@ import "dart:math";
 
 import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
-import "package:music/providers/files_provider.dart";
 import 'dart:io';
 import "package:music/providers/player_status_provider.dart";
 import "package:music/providers/player_provider.dart";
@@ -81,6 +80,7 @@ class _PlayerUIState extends State<PlayerUI> {
         playerProvider.audioPlayer.sequenceState?.currentIndex ?? 0;
 
     playlistProvider.setCurrent(context, playlistProvider.playlist[newIndex].path);
+    playerProvider.audioPlayer.play();
 
 
     PlayerUI player = PlayerUI();
