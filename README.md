@@ -10,6 +10,6 @@
 - [x]  Permanent Notification
 - [x]  Background Autoskip
 - [ ]  Search
-- [ ]  Create Playlists
+- [ ]  Resume from previous session
 - [ ]  Good Looking Interface
 
