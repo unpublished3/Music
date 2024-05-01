@@ -87,20 +87,31 @@ class _HomeState extends State<Home> {
   }
 }
 
-class Header extends StatelessWidget {
+class Header extends StatefulWidget {
   const Header({super.key});
+
+  @override
+  State<Header> createState() => _HeaderState();
+}
+
+class _HeaderState extends State<Header> {
+  bool _searchActive = false;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Padding(padding: EdgeInsets.only(left: 5), child: Text("Music")),
+      title: !_searchActive
+          ? Padding(padding: EdgeInsets.only(left: 5), child: Text("Music"))
+          : TextField(  ),
       actions: [
         Padding(
-          padding: EdgeInsets.only(right: 20),
-          child: GestureDetector(
-            child: Icon(Icons.search),
-          ),
-        )
+            padding: EdgeInsets.only(right: 20),
+            child: GestureDetector(
+              onTap: () => setState(() {
+                _searchActive = !_searchActive;
+              }),
+              child: Icon(Icons.search),
+            ))
       ],
     );
   }
