@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/player_status_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,14 +23,15 @@ class PlaylistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void shuffle() {
+  void shuffle(context) {
+    PlayerProvider playerProvider = Provider.of(context, listen: false);
     if (_mode == false) {
-      final random = Random();
-      _shuffledPlaylist.shuffle(random);
       _mode = true;
     } else {
       _mode = false;
     }
+    playerProvider.audioPlayer.setShuffleModeEnabled(mode);
+
     notifyListeners();
   }
 

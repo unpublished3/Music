@@ -72,8 +72,6 @@ class _PlayerUIState extends State<PlayerUI> {
   }
 
   void nagivateToNewPlayer(context, int direction) {
-    FilesProvider filesProvider =
-        Provider.of<FilesProvider>(context, listen: false);
     PlaylistProvider playlistProvider =
         Provider.of<PlaylistProvider>(context, listen: false);
     PlayerProvider playerProvider =
@@ -82,7 +80,7 @@ class _PlayerUIState extends State<PlayerUI> {
     int newIndex =
         playerProvider.audioPlayer.sequenceState?.currentIndex ?? 0;
 
-    playlistProvider.setCurrent(context, filesProvider.musicFiles[newIndex].path);
+    playlistProvider.setCurrent(context, playlistProvider.playlist[newIndex].path);
 
 
     PlayerUI player = PlayerUI();
@@ -107,7 +105,7 @@ class _PlayerUIState extends State<PlayerUI> {
   void handleShuffle(context) {
     PlaylistProvider playlistProvider =
         Provider.of<PlaylistProvider>(context, listen: false);
-    playlistProvider.shuffle();
+    playlistProvider.shuffle(context);
   }
 
   void handleLoop() {
