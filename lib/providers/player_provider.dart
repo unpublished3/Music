@@ -1,11 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:music/pages/player.dart';
-import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
+import 'package:music/providers/playlist_provider.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -14,6 +15,7 @@ class PlayerProvider extends ChangeNotifier {
   PlayerUI _player = PlayerUI();
   final AudioPlayer _audioPlayer = AudioPlayer();
   final _uuid = const Uuid();
+  final Completer<bool> _sourcesLoaded = Completer<bool>();
 
   PlayerUI get player => _player;
   AudioPlayer get audioPlayer => _audioPlayer;
@@ -23,13 +25,13 @@ class PlayerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUrl(context, {required String filePath}) async {
+  void loadSources(context) async {
     List<UriAudioSource> audioSourceList = [];
 
-    FilesProvider filesProvider =
-        Provider.of<FilesProvider>(context, listen: false);
+    PlaylistProvider playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
 
-    for (File file in filesProvider.musicFiles) {
+    for (File file in playlistProvider.playlist) {
       RequiredMetadata? map =
           Provider.of<MetadataProvider>(context, listen: false)
               .metadataMap[file.path];
@@ -59,10 +61,20 @@ class PlayerProvider extends ChangeNotifier {
       }
     }
     AudioSource playlist = ConcatenatingAudioSource(children: audioSourceList);
-    int index = filesProvider.musicFiles
+    await audioPlayer.setAudioSource(playlist);
+    _sourcesLoaded.complete(true);
+  }
+
+  void setUrl(context, {required String filePath}) async {
+    await _sourcesLoaded.future;
+
+    PlaylistProvider playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
+
+    int index = playlistProvider.playlist
         .indexWhere((element) => element.path == filePath);
 
-    await audioPlayer.setAudioSource(playlist, initialIndex: index);
+    await audioPlayer.seek(Duration.zero, index: index);
     await audioPlayer.play();
   }
 

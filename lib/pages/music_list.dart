@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:music/pages/list.dart';
 import 'package:music/providers/files_provider.dart';
 import 'package:music/providers/metadata_provider.dart';
+import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
 
 import 'package:music/utils/find_music_files.dart';
@@ -24,6 +25,8 @@ class MusicList extends StatelessWidget {
         Provider.of<MetadataProvider>(context, listen: false);
     PlaylistProvider playlistProvider =
         Provider.of<PlaylistProvider>(context, listen: false);
+    PlayerProvider playerProvider =
+        Provider.of<PlayerProvider>(context, listen: false);
 
     List<File> files = await findMp3Files(directory);
 
@@ -35,6 +38,8 @@ class MusicList extends StatelessWidget {
 
     filesProvider.addFiles(files);
     playlistProvider.addFiles(files);
+
+    playerProvider.loadSources(context);
   }
 
   Future<void> setMetadata(
