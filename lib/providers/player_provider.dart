@@ -25,7 +25,7 @@ class PlayerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadSources(context) async {
+  void loadSources(context, {String? loadedPath}) async {
     List<UriAudioSource> audioSourceList = [];
 
     PlaylistProvider playlistProvider =
@@ -60,8 +60,17 @@ class PlayerProvider extends ChangeNotifier {
         ));
       }
     }
+
+    int? index;
+    if (loadedPath != null) {
+    print("$loadedPath\n\n\n\n\n\n\n\n");
+      index = playlistProvider.playlist
+        .indexWhere((element) => element.path == loadedPath);
+    playlistProvider.setCurrent(context, loadedPath);
+    }
+
     AudioSource playlist = ConcatenatingAudioSource(children: audioSourceList);
-    await audioPlayer.setAudioSource(playlist);
+    await audioPlayer.setAudioSource(playlist, initialIndex: index);
     _sourcesLoaded.complete(true);
   }
 

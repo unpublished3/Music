@@ -13,6 +13,7 @@ import 'package:music/providers/playlist_provider.dart';
 import 'package:music/utils/find_music_files.dart';
 import 'package:music/utils/metadata.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MusicList extends StatelessWidget {
   MusicList({super.key, required this.directory});
@@ -39,7 +40,10 @@ class MusicList extends StatelessWidget {
     filesProvider.addFiles(files);
     playlistProvider.addFiles(files);
 
-    playerProvider.loadSources(context);
+    final prefs = await SharedPreferences.getInstance();
+    String? loadedFile = prefs.getString("storedPath");
+
+    playerProvider.loadSources(context, loadedPath: loadedFile);
   }
 
   Future<void> setMetadata(
