@@ -63,7 +63,6 @@ class PlayerProvider extends ChangeNotifier {
 
     int? index;
     if (loadedPath != null) {
-    print("$loadedPath\n\n\n\n\n\n\n\n");
       index = playlistProvider.playlist
         .indexWhere((element) => element.path == loadedPath);
     playlistProvider.setCurrent(context, loadedPath);

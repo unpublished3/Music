@@ -49,17 +49,15 @@ class _PlayerUIState extends State<PlayerUI> {
 
     playerProvider.audioPlayer.playbackEventStream.listen((event) {
       currentIndex ??= event.currentIndex;
-      if (currentIndex != event.currentIndex && currentIndex != null && mounted) {
+      if (currentIndex != event.currentIndex &&
+          currentIndex != null &&
+          mounted) {
         if (!skipped) {
           int direction = currentIndex! < event.currentIndex! ? 0 : 1;
           nagivateToNewPlayer(context, direction);
           skipped = true;
         }
       }
-    });
-
-    playerProvider.audioPlayer.playingStream.listen((event) {
-      playerStatusProvider.reflectPlayStatusChange(event);
     });
   }
 
@@ -76,12 +74,10 @@ class _PlayerUIState extends State<PlayerUI> {
     PlayerProvider playerProvider =
         Provider.of<PlayerProvider>(context, listen: false);
 
-    int newIndex =
-        playerProvider.audioPlayer.sequenceState?.currentIndex ?? 0;
+    int newIndex = playerProvider.audioPlayer.sequenceState?.currentIndex ?? 0;
 
-    playlistProvider.setCurrent(context, playlistProvider.playlist[newIndex].path);
-    playerProvider.audioPlayer.play();
-
+    playlistProvider.setCurrent(
+        context, playlistProvider.playlist[newIndex].path);
 
     PlayerUI player = PlayerUI();
 
@@ -95,7 +91,6 @@ class _PlayerUIState extends State<PlayerUI> {
     playerProvider.changePlayer(
       newPlayer: player,
     );
-
   }
 
   void nagivateToHome() {
@@ -221,12 +216,16 @@ class _PlayerUIState extends State<PlayerUI> {
                       ElevatedButton(
                         onPressed: () {
                           if (mounted) {
-                            playerStatusProvider
-                                .alterPlayStatus(playerProvider.audioPlayer);
+                            if (playerProvider.audioPlayer.playing) {
+                              playerProvider.audioPlayer.pause();
+                            } else 
+                            {
+                              playerProvider.audioPlayer.play();
+                            }
                           }
                         },
                         child: Icon(
-                            value.isPlaying ? Icons.pause : Icons.play_arrow),
+                            playerProvider.audioPlayer.playing ? Icons.pause : Icons.play_arrow),
                       ),
                       GestureDetector(
                           onTap: () {

@@ -141,9 +141,9 @@ class FloatingImage extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        if (!playerStatusProvider.isPlaying) {
-          playerStatusProvider.alterPlayStatus(playerProvider.audioPlayer);
-        }
+        if (!playerProvider.audioPlayer.playing) {
+          playerProvider.audioPlayer.play();
+        } 
         Navigator.push(
             context,
             PageTransition(
