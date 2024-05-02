@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/player_status_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PlaylistProvider extends ChangeNotifier {
   final List<File> _playlist = [];
@@ -36,12 +37,19 @@ class PlaylistProvider extends ChangeNotifier {
   }
 
   void setCurrent(context, String path) {
-    final playerStatusProvider = Provider.of<PlayerStatusProvider>(context, listen: false);
+    final playerStatusProvider =
+        Provider.of<PlayerStatusProvider>(context, listen: false);
 
     _current = path;
     playerStatusProvider.set(context, path);
+    _storeCurrent(path);
 
     notifyListeners();
+  }
+
+  void _storeCurrent(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("storedPath", path);
   }
 
   String get current => _current;
