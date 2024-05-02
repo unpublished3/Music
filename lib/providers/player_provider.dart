@@ -25,7 +25,7 @@ class PlayerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadSources(context, {String? loadedPath}) async {
+  void loadSources(context, {String? loadedPath, int? played}) async {
     List<UriAudioSource> audioSourceList = [];
 
     PlaylistProvider playlistProvider =
@@ -62,14 +62,23 @@ class PlayerProvider extends ChangeNotifier {
     }
 
     int? index;
+    Duration? playedDuration;
+
     if (loadedPath != null) {
       index = playlistProvider.playlist
-        .indexWhere((element) => element.path == loadedPath);
-    playlistProvider.setCurrent(context, loadedPath);
+          .indexWhere((element) => element.path == loadedPath);
+      playlistProvider.setCurrent(context, loadedPath);
+
+      if (played != null) {
+        print("$played\n\n\n\n\n\n");
+        playedDuration = Duration(milliseconds: played);
+        print("$playedDuration\n\n\n\n\n\n");
+      }
     }
 
     AudioSource playlist = ConcatenatingAudioSource(children: audioSourceList);
-    await audioPlayer.setAudioSource(playlist, initialIndex: index);
+    await audioPlayer.setAudioSource(playlist,
+        initialIndex: index, initialPosition: playedDuration);
     _sourcesLoaded.complete(true);
   }
 

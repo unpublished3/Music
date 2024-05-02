@@ -42,8 +42,9 @@ class MusicList extends StatelessWidget {
 
     final prefs = await SharedPreferences.getInstance();
     String? loadedFile = prefs.getString("storedPath");
+    int? played = prefs.getInt("played");
 
-    playerProvider.loadSources(context, loadedPath: loadedFile);
+    playerProvider.loadSources(context, loadedPath: loadedFile, played: played);
   }
 
   Future<void> setMetadata(

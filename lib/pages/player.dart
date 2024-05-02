@@ -13,6 +13,7 @@ import "package:music/providers/playlist_provider.dart";
 import "package:music/utils/format_data.dart" as formatter;
 import "package:page_transition/page_transition.dart";
 import "package:provider/provider.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 class PlayerUI extends StatefulWidget {
   PlayerUI({super.key});
@@ -58,6 +59,11 @@ class _PlayerUIState extends State<PlayerUI> {
           skipped = true;
         }
       }
+    });
+
+    Timer.periodic(Duration(seconds: 5), (timer) async {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setInt("played", playerStatusProvider.current.inMilliseconds);
     });
   }
 
@@ -218,14 +224,14 @@ class _PlayerUIState extends State<PlayerUI> {
                           if (mounted) {
                             if (playerProvider.audioPlayer.playing) {
                               playerProvider.audioPlayer.pause();
-                            } else 
-                            {
+                            } else {
                               playerProvider.audioPlayer.play();
                             }
                           }
                         },
-                        child: Icon(
-                            playerProvider.audioPlayer.playing ? Icons.pause : Icons.play_arrow),
+                        child: Icon(playerProvider.audioPlayer.playing
+                            ? Icons.pause
+                            : Icons.play_arrow),
                       ),
                       GestureDetector(
                           onTap: () {
