@@ -70,9 +70,7 @@ class PlayerProvider extends ChangeNotifier {
       playlistProvider.setCurrent(context, loadedPath);
 
       if (played != null) {
-        print("$played\n\n\n\n\n\n");
         playedDuration = Duration(milliseconds: played);
-        print("$playedDuration\n\n\n\n\n\n");
       }
     }
 
