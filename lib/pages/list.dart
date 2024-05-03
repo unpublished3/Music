@@ -111,9 +111,9 @@ class ListElement extends StatelessWidget {
         padding: EdgeInsets.all(12),
         height: MediaQuery.of(context).size.height * 0.09,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black, width: 2),
+          border: Border.all(color: Colors.white, width: 1),
           borderRadius: BorderRadius.circular(12),
-          color: current ? Colors.grey[400] : Colors.white,
+          // color: current ? Colors.grey[400] : Colors.white,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

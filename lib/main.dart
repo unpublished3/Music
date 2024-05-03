@@ -9,7 +9,6 @@ import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_status_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
-import 'package:music/providers/theme_provider.dart';
 import 'package:music/utils/directory_selector.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
@@ -30,7 +29,6 @@ Future<void> main() async {
     ChangeNotifierProvider(create: (context) => FilesProvider()),
     ChangeNotifierProvider(create: (context) => PlaylistProvider()),
     ChangeNotifierProvider(create: (context) => PlayerStatusProvider()),
-    ChangeNotifierProvider(create: (context) => ThemeProvider()),
   ], child: MyApp()));
 }
 
@@ -47,10 +45,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData =
-        Provider.of<ThemeProvider>(context, listen: false).theme;
     return MaterialApp(
-      theme: themeData,
+      theme: ThemeData(),
+      darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       home: Platform.isAndroid
           ? FutureBuilder<bool>(
