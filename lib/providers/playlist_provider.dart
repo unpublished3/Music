@@ -16,11 +16,19 @@ class PlaylistProvider extends ChangeNotifier {
       !_mode ? _playlist.toList() : _shuffledPlaylist.toList();
   bool get mode => _mode;
 
-  void addFiles(List<File> files) {
+  void addFiles(context, List<File> files) async {
+    PlayerProvider playerProvider = Provider.of(context, listen: false);
+
     if (_playlist.length != files.length) {
       _playlist.addAll(files);
       _shuffledPlaylist.addAll(files);
     }
+
+    final prefs = await SharedPreferences.getInstance();
+    _mode = prefs.getBool("shuffle") ?? false;
+    if (_mode == true) playerProvider.audioPlayer.setShuffleModeEnabled(mode);
+    ;
+
     notifyListeners();
   }
 

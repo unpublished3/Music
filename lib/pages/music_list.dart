@@ -38,7 +38,7 @@ class MusicList extends StatelessWidget {
     files = sortByName(context, metadataProvider, files);
 
     filesProvider.addFiles(files);
-    playlistProvider.addFiles(files);
+    playlistProvider.addFiles(context, files);
 
     final prefs = await SharedPreferences.getInstance();
     String? loadedFile = prefs.getString("storedPath");

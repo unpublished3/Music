@@ -103,10 +103,12 @@ class _PlayerUIState extends State<PlayerUI> {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  void handleShuffle(context) {
+  void handleShuffle(context) async {
     PlaylistProvider playlistProvider =
         Provider.of<PlaylistProvider>(context, listen: false);
     playlistProvider.shuffle(context);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("shuffle", playlistProvider.mode);
   }
 
   void handleLoop() {
