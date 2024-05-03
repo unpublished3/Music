@@ -11,7 +11,6 @@ import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
 import 'package:music/providers/theme_provider.dart';
 import 'package:music/utils/directory_selector.dart';
-import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
@@ -48,10 +47,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData = Provider.of<ThemeProvider>(context, listen: false).theme;
+    ThemeData themeData =
+        Provider.of<ThemeProvider>(context, listen: false).theme;
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       theme: themeData,
+      debugShowCheckedModeBanner: false,
       home: Platform.isAndroid
           ? FutureBuilder<bool>(
               future: requestStoragePermission(),

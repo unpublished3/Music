@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  static const Color _primary = Color(0xff1e2135);
+  static const Color _primary = Color(0xFF2e3440);
   static final MaterialColor _primaryTheme = MaterialColor(_primary.value, {
     50: _primary.withOpacity(0.1),
     100: _primary.withOpacity(0.2),
@@ -16,12 +16,13 @@ class ThemeProvider extends ChangeNotifier {
   });
 
   final _theme = ThemeData(
-      colorScheme: ColorScheme.fromSwatch(
-        primarySwatch: _primaryTheme,
-      ),
-      scaffoldBackgroundColor: _primary,
-      appBarTheme: const AppBarTheme(
-          backgroundColor: _primary, foregroundColor: Colors.white));
+    colorScheme: ColorScheme.fromSwatch(
+      primarySwatch: _primaryTheme,
+    ),
+    scaffoldBackgroundColor: _primary,
+    appBarTheme: const AppBarTheme(
+        backgroundColor: _primary, foregroundColor: Colors.white), 
+  cardColor: Colors.white);
 
   ThemeData get theme => _theme;
 }
