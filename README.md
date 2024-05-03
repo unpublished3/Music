@@ -10,6 +10,6 @@
 - [x]  Permanent Notification
 - [x]  Background Autoskip
 - [ ]  Search
-- [ ]  Resume from previous session
+- [x]  Resume from previous session
 - [ ]  Good Looking Interface
 
