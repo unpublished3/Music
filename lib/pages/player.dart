@@ -131,6 +131,8 @@ class _PlayerUIState extends State<PlayerUI> {
       },
       child: Consumer<PlayerStatusProvider>(
         builder: (context, value, child) => MaterialApp(
+          theme: ThemeData(),
+          darkTheme: ThemeData.dark(),
           debugShowCheckedModeBanner: false,
           home: Scaffold(
             appBar: AppBar(

@@ -9,7 +9,9 @@ import 'package:music/providers/metadata_provider.dart';
 import 'package:music/providers/player_status_provider.dart';
 import 'package:music/providers/player_provider.dart';
 import 'package:music/providers/playlist_provider.dart';
+import 'package:music/providers/theme_provider.dart';
 import 'package:music/utils/directory_selector.dart';
+import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
@@ -23,7 +25,14 @@ Future<void> main() async {
   );
   WidgetsFlutterBinding.ensureInitialized();
   MetadataGod.initialize();
-  runApp(MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => PlayerProvider()),
+    ChangeNotifierProvider(create: (context) => MetadataProvider()),
+    ChangeNotifierProvider(create: (context) => FilesProvider()),
+    ChangeNotifierProvider(create: (context) => PlaylistProvider()),
+    ChangeNotifierProvider(create: (context) => PlayerStatusProvider()),
+    ChangeNotifierProvider(create: (context) => ThemeProvider()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -39,19 +48,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => PlayerProvider()),
-        ChangeNotifierProvider(create: (context) => MetadataProvider()),
-        ChangeNotifierProvider(create: (context) => FilesProvider()),
-        ChangeNotifierProvider(create: (context) => PlaylistProvider()),
-        ChangeNotifierProvider(create: (context) => PlayerStatusProvider())
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Platform.isAndroid
-            ? FutureBuilder<bool>(
-                future: requestStoragePermission(),
+    ThemeData themeData = Provider.of<ThemeProvider>(context, listen: false).theme;
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: themeData,
+      home: Platform.isAndroid
+          ? FutureBuilder<bool>(
+              future: requestStoragePermission(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Show a loading indicator while waiting for permission result
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  // Handle any errors
+                  return Scaffold(
+                      body: Center(child: Text('Error occurred main')));
+                } else {
+                  // Permission granted or denied
+                  if (snapshot.data == true) {
+                    return Home(
+                      directory: "/storage/emulated/0/Download",
+                    );
+                  } else {
+                    return Scaffold(
+                        body: Center(child: Text('Permission denied')));
+                  }
+                }
+              },
+            )
+          : Scaffold(
+              body: FutureBuilder<String>(
+                future: selectDirectory(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Show a loading indicator while waiting for permission result
@@ -61,44 +88,18 @@ class MyApp extends StatelessWidget {
                     return Scaffold(
                         body: Center(child: Text('Error occurred main')));
                   } else {
-                    // Permission granted or denied
-                    if (snapshot.data == true) {
+                    String directory = snapshot.data ?? "@!!cancelled!!@";
+                    if (directory != "@!!cancelled!!@") {
                       return Home(
-                        directory: "/storage/emulated/0/Download",
+                        directory: directory,
                       );
                     } else {
-                      return Scaffold(
-                          body: Center(child: Text('Permission denied')));
+                      return Scaffold(body: Center(child: Text('Cancelledx`')));
                     }
                   }
                 },
-              )
-            : Scaffold(
-                body: FutureBuilder<String>(
-                  future: selectDirectory(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Show a loading indicator while waiting for permission result
-                      return CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      // Handle any errors
-                      return Scaffold(
-                          body: Center(child: Text('Error occurred main')));
-                    } else {
-                      String directory = snapshot.data ?? "@!!cancelled!!@";
-                      if (directory != "@!!cancelled!!@") {
-                        return Home(
-                          directory: directory,
-                        );
-                      } else {
-                        return Scaffold(
-                            body: Center(child: Text('Cancelledx`')));
-                      }
-                    }
-                  },
-                ),
               ),
-      ),
+            ),
     );
   }
 }
