@@ -76,7 +76,7 @@ class ListUI extends StatelessWidget {
                     current: currentMusic == file.path,
                     albumArt: requiredMetadata.albumArt,
                     trackName:
-                        formatter.formatName(requiredMetadata.trackName, 30),
+                        formatter.formatName(requiredMetadata.trackName, 35),
                     artistName: requiredMetadata.artistName,
                     trackDuration: formatter
                         .formatDuration(requiredMetadata.trackDuration))),
@@ -111,8 +111,8 @@ class ListElement extends StatelessWidget {
         padding: EdgeInsets.all(12),
         height: MediaQuery.of(context).size.height * 0.09,
         decoration: BoxDecoration(
-          border:
-              Border.all(color: const Color.fromARGB(255, 155, 155, 155) , width: 1),
+          border: Border.all(
+              color: const Color.fromARGB(255, 155, 155, 155), width: 1),
           borderRadius: BorderRadius.circular(12),
           // color: current ? Colors.grey[400] : Colors.white,
         ),
@@ -125,9 +125,24 @@ class ListElement extends StatelessWidget {
                 AlbumArt(albumArt: albumArt),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 0),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                   child: Column(
-                    children: [Text(trackName), Text(artistName)],
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        trackName,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      Text(
+                        artistName,
+                        textAlign: TextAlign.left,
+                      )
+                    ],
                   ),
                 )
               ],
