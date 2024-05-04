@@ -14,7 +14,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
 import 'package:provider/provider.dart';
-import 'package:system_theme/system_theme.dart';
 
 Future<void> main() async {
   await JustAudioBackground.init(

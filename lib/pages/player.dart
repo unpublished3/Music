@@ -4,6 +4,7 @@ import "dart:async";
 import "dart:math";
 
 import "package:flutter/material.dart";
+import "package:flutter/widgets.dart";
 import "package:just_audio/just_audio.dart";
 import 'dart:io';
 import "package:music/providers/player_status_provider.dart";
@@ -120,6 +121,12 @@ class _PlayerUIState extends State<PlayerUI> {
     }
   }
 
+    ThemeData darkThemeData = ThemeData(
+      colorScheme: ColorScheme.dark(
+          background: Color.fromARGB(255, 30, 28, 28),
+          brightness: Brightness.dark));
+
+
   @override
   Widget build(BuildContext context) {
     bool mode = Provider.of<PlaylistProvider>(context).mode;
@@ -134,10 +141,11 @@ class _PlayerUIState extends State<PlayerUI> {
       child: Consumer<PlayerStatusProvider>(
         builder: (context, value, child) => MaterialApp(
           theme: ThemeData(),
-          darkTheme: ThemeData.dark(),
+          darkTheme: darkThemeData,
           debugShowCheckedModeBanner: false,
           home: Scaffold(
             appBar: AppBar(
+              backgroundColor: Color.fromARGB(255, 30, 28, 28),
               leading: Padding(
                 padding: EdgeInsets.only(left: 25),
                 child: GestureDetector(
@@ -178,9 +186,21 @@ class _PlayerUIState extends State<PlayerUI> {
                   ),
 
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(playerStatusProvider.trackName),
-                      Text(playerStatusProvider.artistName)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          playerStatusProvider.trackName,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Text(
+                        playerStatusProvider.artistName,
+                        textAlign: TextAlign.left,
+                      )
                     ],
                   ),
 

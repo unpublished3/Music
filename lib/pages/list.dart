@@ -113,7 +113,9 @@ class ListElement extends StatelessWidget {
         padding: EdgeInsets.all(12),
         height: MediaQuery.of(context).size.height * 0.09,
         decoration: BoxDecoration(
-          color: isDark?Color.fromARGB(255, 40, 38, 38): Color.fromARGB(255, 215, 213, 213),
+          color: isDark
+              ? Color.fromARGB(255, 40, 38, 38)
+              : Color.fromARGB(255, 215, 213, 213),
           border: Border.all(
               color: const Color.fromARGB(255, 155, 155, 155), width: 1),
           borderRadius: BorderRadius.circular(12),
