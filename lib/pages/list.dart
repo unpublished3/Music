@@ -76,7 +76,7 @@ class ListUI extends StatelessWidget {
                     current: currentMusic == file.path,
                     albumArt: requiredMetadata.albumArt,
                     trackName:
-                        formatter.formatName(requiredMetadata.trackName, 35),
+                        formatter.formatName(requiredMetadata.trackName, 30),
                     artistName: requiredMetadata.artistName,
                     trackDuration: formatter
                         .formatDuration(requiredMetadata.trackDuration))),
@@ -105,12 +105,15 @@ class ListElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.only(right: 20, left: 20, top: 8, bottom: 7),
       child: Container(
         padding: EdgeInsets.all(12),
         height: MediaQuery.of(context).size.height * 0.09,
         decoration: BoxDecoration(
+          color: isDark?Color.fromARGB(255, 40, 38, 38): Color.fromARGB(255, 215, 213, 213),
           border: Border.all(
               color: const Color.fromARGB(255, 155, 155, 155), width: 1),
           borderRadius: BorderRadius.circular(12),
@@ -133,9 +136,7 @@ class ListElement extends StatelessWidget {
                       Text(
                         trackName,
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                       Text(

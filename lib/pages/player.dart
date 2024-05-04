@@ -123,7 +123,6 @@ class _PlayerUIState extends State<PlayerUI> {
   @override
   Widget build(BuildContext context) {
     bool mode = Provider.of<PlaylistProvider>(context).mode;
-    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     return PopScope(
       canPop: false,

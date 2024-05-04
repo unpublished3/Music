@@ -14,6 +14,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:io' show Platform;
 
 import 'package:provider/provider.dart';
+import 'package:system_theme/system_theme.dart';
 
 Future<void> main() async {
   await JustAudioBackground.init(
@@ -43,11 +44,16 @@ class MyApp extends StatelessWidget {
     return false;
   }
 
+  ThemeData darkThemeData = ThemeData(
+      colorScheme: ColorScheme.dark(
+          background: Color.fromARGB(255, 23, 19, 19).withOpacity(0.7),
+          brightness: Brightness.dark));
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(),
-      darkTheme: ThemeData.dark(),
+      theme: ThemeData(primaryColor: Colors.white),
+      darkTheme: darkThemeData,
       debugShowCheckedModeBanner: false,
       home: Platform.isAndroid
           ? FutureBuilder<bool>(
