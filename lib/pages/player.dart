@@ -4,7 +4,6 @@ import "dart:async";
 import "dart:math";
 
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 import "package:just_audio/just_audio.dart";
 import 'dart:io';
 import "package:music/providers/player_status_provider.dart";
@@ -121,15 +120,15 @@ class _PlayerUIState extends State<PlayerUI> {
     }
   }
 
-    ThemeData darkThemeData = ThemeData(
+  ThemeData darkThemeData = ThemeData(
       colorScheme: ColorScheme.dark(
           background: Color.fromARGB(255, 30, 28, 28),
           brightness: Brightness.dark));
 
-
   @override
   Widget build(BuildContext context) {
     bool mode = Provider.of<PlaylistProvider>(context).mode;
+    bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
     return PopScope(
       canPop: false,
@@ -180,6 +179,7 @@ class _PlayerUIState extends State<PlayerUI> {
                       height: MediaQuery.of(context).size.height * 0.35,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
+                          // borderRadius: borderRadius,
                           image: DecorationImage(
                               image: playerStatusProvider.albumArt.image)),
                     ),
@@ -204,28 +204,38 @@ class _PlayerUIState extends State<PlayerUI> {
                     ],
                   ),
 
-                  Column(
-                    children: [
-                      Slider(
-                        onChanged: (double value) async {
-                          await playerProvider.audioPlayer.seek(Duration(
-                              seconds: seekLocation(
-                                  value, playerStatusProvider.duration)));
-                        },
-                        value: min(value.percentageComplete, 1),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          value.current > playerStatusProvider.duration
-                              ? Text(formatter.formatDuration(
-                                  playerStatusProvider.duration))
-                              : Text(formatter.formatDuration(value.current)),
-                          Text(formatter
-                              .formatDuration(playerStatusProvider.duration))
-                        ],
-                      )
-                    ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    child: Column(
+                      children: [
+                        SliderTheme(
+                          data: SliderThemeData(
+                            trackShape: CustomSlider(),
+                            inactiveTrackColor:
+                                Color.fromARGB(255, 144, 144, 144),
+                          ),
+                          child: Slider(
+                            onChanged: (double value) async {
+                              await playerProvider.audioPlayer.seek(Duration(
+                                  seconds: seekLocation(
+                                      value, playerStatusProvider.duration)));
+                            },
+                            value: min(value.percentageComplete, 1),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            value.current > playerStatusProvider.duration
+                                ? Text(formatter.formatDuration(
+                                    playerStatusProvider.duration))
+                                : Text(formatter.formatDuration(value.current)),
+                            Text(formatter
+                                .formatDuration(playerStatusProvider.duration))
+                          ],
+                        )
+                      ],
+                    ),
                   ),
 
                   Row(
@@ -280,5 +290,22 @@ class _PlayerUIState extends State<PlayerUI> {
         ),
       ),
     );
+  }
+}
+
+class CustomSlider extends RoundedRectSliderTrackShape {
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final trackHeight = sliderTheme.trackHeight;
+    final trackLeft = offset.dx;
+    final trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
+    final trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }
