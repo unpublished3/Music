@@ -27,7 +27,6 @@ class PlaylistProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _mode = prefs.getBool("shuffle") ?? false;
     if (_mode == true) playerProvider.audioPlayer.setShuffleModeEnabled(mode);
-    ;
 
     notifyListeners();
   }

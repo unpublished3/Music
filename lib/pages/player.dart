@@ -4,7 +4,6 @@ import "dart:async";
 import "dart:math";
 import "dart:ui";
 
-import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
 import 'dart:io';
@@ -13,7 +12,6 @@ import "package:music/providers/player_provider.dart";
 import "package:music/providers/playlist_provider.dart";
 
 import "package:music/utils/format_data.dart" as formatter;
-import "package:music/utils/metadata.dart";
 import "package:page_transition/page_transition.dart";
 import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
@@ -57,8 +55,7 @@ class _PlayerUIState extends State<PlayerUI> {
           currentIndex != null &&
           mounted) {
         if (!skipped) {
-          int direction = currentIndex! < event.currentIndex! ? 0 : 1;
-          nagivateToNewPlayer(context, direction);
+          nagivateToNewPlayer(context);
           skipped = true;
         }
       }
@@ -77,7 +74,7 @@ class _PlayerUIState extends State<PlayerUI> {
     return 0;
   }
 
-  void nagivateToNewPlayer(context, int direction) {
+  void nagivateToNewPlayer(context) {
     PlaylistProvider playlistProvider =
         Provider.of<PlaylistProvider>(context, listen: false);
     PlayerProvider playerProvider =
@@ -90,13 +87,8 @@ class _PlayerUIState extends State<PlayerUI> {
 
     PlayerUI player = PlayerUI();
 
-    Navigator.pushReplacement(
-        context,
-        PageTransition(
-            child: player,
-            type: direction == 1
-                ? PageTransitionType.leftToRightWithFade
-                : PageTransitionType.rightToLeftWithFade));
+    Navigator.pushReplacement(context,
+        PageTransition(child: player, type: PageTransitionType.bottomToTop));
     playerProvider.changePlayer(
       newPlayer: player,
     );
@@ -178,7 +170,8 @@ class _PlayerUIState extends State<PlayerUI> {
                         // Music Image
                         GestureDetector(
                           onPanUpdate: (details) {
-                            if (details.delta.dx.abs() > details.delta.dy.abs()) {
+                            if (details.delta.dx.abs() >
+                                details.delta.dy.abs()) {
                               if (details.delta.dx < 0) {
                                 playerProvider.audioPlayer.seekToNext();
                                 ();
@@ -193,10 +186,11 @@ class _PlayerUIState extends State<PlayerUI> {
                             decoration: BoxDecoration(
                                 // borderRadius: borderRadius,
                                 image: DecorationImage(
-                                    image: playerStatusProvider.albumArt.image)),
+                                    image:
+                                        playerStatusProvider.albumArt.image)),
                           ),
                         ),
-                  
+
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -215,7 +209,7 @@ class _PlayerUIState extends State<PlayerUI> {
                             )
                           ],
                         ),
-                  
+
                         Padding(
                           padding:
                               EdgeInsets.symmetric(horizontal: 10, vertical: 0),
@@ -231,21 +225,25 @@ class _PlayerUIState extends State<PlayerUI> {
                                 ),
                                 child: Slider(
                                   onChanged: (double value) async {
-                                    await playerProvider.audioPlayer.seek(Duration(
-                                        seconds: seekLocation(
-                                            value, playerStatusProvider.duration)));
+                                    await playerProvider.audioPlayer.seek(
+                                        Duration(
+                                            seconds: seekLocation(
+                                                value,
+                                                playerStatusProvider
+                                                    .duration)));
                                   },
                                   value: min(value.percentageComplete, 1),
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   value.current > playerStatusProvider.duration
                                       ? Text(formatter.formatDuration(
                                           playerStatusProvider.duration))
-                                      : Text(
-                                          formatter.formatDuration(value.current)),
+                                      : Text(formatter
+                                          .formatDuration(value.current)),
                                   Text(formatter.formatDuration(
                                       playerStatusProvider.duration))
                                 ],
@@ -253,7 +251,7 @@ class _PlayerUIState extends State<PlayerUI> {
                             ],
                           ),
                         ),
-                  
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -261,7 +259,9 @@ class _PlayerUIState extends State<PlayerUI> {
                               onTap: () => {handleShuffle(context)},
                               child: Icon(
                                 Icons.shuffle,
-                                color: !mode ? Colors.white : Color.fromARGB(224, 210, 111, 237),
+                                color: !mode
+                                    ? Colors.white
+                                    : Color.fromARGB(224, 210, 111, 237),
                               ),
                             ),
                             GestureDetector(
@@ -280,13 +280,16 @@ class _PlayerUIState extends State<PlayerUI> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                shape: CircleBorder(),
-                                padding: EdgeInsets.all(15),
-                                backgroundColor: Colors.white.withOpacity(0.3)
+                                  shape: CircleBorder(),
+                                  padding: EdgeInsets.all(15),
+                                  backgroundColor:
+                                      Colors.white.withOpacity(0.3)),
+                              child: Icon(
+                                playerProvider.audioPlayer.playing
+                                    ? Icons.pause
+                                    : Icons.play_arrow,
+                                color: Colors.white,
                               ),
-                              child: Icon(playerProvider.audioPlayer.playing
-                                  ? Icons.pause
-                                  : Icons.play_arrow, color: Colors.white,),
                             ),
                             GestureDetector(
                                 onTap: () {
