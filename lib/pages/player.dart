@@ -269,7 +269,7 @@ class _PlayerUIState extends State<PlayerUI> {
                                   playerProvider.audioPlayer.seekToPrevious();
                                 },
                                 child: Icon(Icons.skip_previous)),
-                            ElevatedButton(
+                            TextButton(
                               onPressed: () {
                                 if (mounted) {
                                   if (playerProvider.audioPlayer.playing) {
