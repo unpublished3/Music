@@ -261,7 +261,7 @@ class _PlayerUIState extends State<PlayerUI> {
                               onTap: () => {handleShuffle(context)},
                               child: Icon(
                                 Icons.shuffle,
-                                color: !mode ? Colors.black : Colors.purple[600],
+                                color: !mode ? Colors.white : Color.fromARGB(224, 210, 111, 237),
                               ),
                             ),
                             GestureDetector(
@@ -279,9 +279,14 @@ class _PlayerUIState extends State<PlayerUI> {
                                   }
                                 }
                               },
+                              style: ElevatedButton.styleFrom(
+                                shape: CircleBorder(),
+                                padding: EdgeInsets.all(15),
+                                backgroundColor: Colors.white.withOpacity(0.3)
+                              ),
                               child: Icon(playerProvider.audioPlayer.playing
                                   ? Icons.pause
-                                  : Icons.play_arrow),
+                                  : Icons.play_arrow, color: Colors.white,),
                             ),
                             GestureDetector(
                                 onTap: () {
@@ -294,8 +299,8 @@ class _PlayerUIState extends State<PlayerUI> {
                               child: Icon(
                                 Icons.repeat_rounded,
                                 color: !value.repeat
-                                    ? Colors.black
-                                    : Colors.purple[600],
+                                    ? Colors.white
+                                    : Color.fromARGB(224, 210, 111, 237),
                               ),
                             )
                           ],
