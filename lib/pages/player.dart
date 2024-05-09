@@ -4,6 +4,7 @@ import "dart:async";
 import "dart:math";
 import "dart:ui";
 
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:just_audio/just_audio.dart";
 import 'dart:io';
@@ -140,12 +141,12 @@ class _PlayerUIState extends State<PlayerUI> {
       },
       child: Consumer<PlayerStatusProvider>(
         builder: (context, value, child) => MaterialApp(
-          theme: ThemeData(),
+          theme: darkThemeData,
           darkTheme: darkThemeData,
           debugShowCheckedModeBanner: false,
           home: Scaffold(
             appBar: AppBar(
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.transparent.withOpacity(0.3),
               leading: Padding(
                 padding: EdgeInsets.only(left: 25),
                 child: GestureDetector(
@@ -165,137 +166,142 @@ class _PlayerUIState extends State<PlayerUI> {
               ),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 50, right: 50, top: 50, bottom: 180),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Music Image
-                      GestureDetector(
-                        onPanUpdate: (details) {
-                          if (details.delta.dx.abs() > details.delta.dy.abs()) {
-                            if (details.delta.dx < 0) {
-                              playerProvider.audioPlayer.seekToNext();
-                              ();
-                            } else if (details.delta.dx > 0) {
-                              playerProvider.audioPlayer.seekToPrevious();
+                child: Container(
+                  color: Colors.black.withOpacity(0.3),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 50, right: 50, top: 50, bottom: 180),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Music Image
+                        GestureDetector(
+                          onPanUpdate: (details) {
+                            if (details.delta.dx.abs() > details.delta.dy.abs()) {
+                              if (details.delta.dx < 0) {
+                                playerProvider.audioPlayer.seekToNext();
+                                ();
+                              } else if (details.delta.dx > 0) {
+                                playerProvider.audioPlayer.seekToPrevious();
+                              }
                             }
-                          }
-                        },
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.35,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                              // borderRadius: borderRadius,
-                              image: DecorationImage(
-                                  image: playerStatusProvider.albumArt.image)),
-                        ),
-                      ),
-                
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              playerStatusProvider.trackName,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.left,
-                            ),
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.35,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                // borderRadius: borderRadius,
+                                image: DecorationImage(
+                                    image: playerStatusProvider.albumArt.image)),
                           ),
-                          Text(
-                            playerStatusProvider.artistName,
-                            textAlign: TextAlign.left,
-                          )
-                        ],
-                      ),
-                
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                        child: Column(
+                        ),
+                  
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SliderTheme(
-                              data: SliderThemeData(
-                                trackShape: CustomSlider(),
-                                inactiveTrackColor:
-                                    Color.fromARGB(255, 144, 144, 144),
-                              ),
-                              child: Slider(
-                                onChanged: (double value) async {
-                                  await playerProvider.audioPlayer.seek(Duration(
-                                      seconds: seekLocation(
-                                          value, playerStatusProvider.duration)));
-                                },
-                                value: min(value.percentageComplete, 1),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 10),
+                              child: Text(
+                                playerStatusProvider.trackName,
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left,
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                value.current > playerStatusProvider.duration
-                                    ? Text(formatter.formatDuration(
-                                        playerStatusProvider.duration))
-                                    : Text(
-                                        formatter.formatDuration(value.current)),
-                                Text(formatter.formatDuration(
-                                    playerStatusProvider.duration))
-                              ],
+                            Text(
+                              playerStatusProvider.artistName,
+                              textAlign: TextAlign.left,
                             )
                           ],
                         ),
-                      ),
-                
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          GestureDetector(
-                            onTap: () => {handleShuffle(context)},
-                            child: Icon(
-                              Icons.shuffle,
-                              color: !mode ? Colors.black : Colors.purple[600],
-                            ),
+                  
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          child: Column(
+                            children: [
+                              SliderTheme(
+                                data: SliderThemeData(
+                                  trackShape: CustomSlider(),
+                                  thumbColor: Colors.white,
+                                  activeTrackColor: Colors.white,
+                                  inactiveTrackColor:
+                                      Color.fromARGB(255, 144, 144, 144),
+                                ),
+                                child: Slider(
+                                  onChanged: (double value) async {
+                                    await playerProvider.audioPlayer.seek(Duration(
+                                        seconds: seekLocation(
+                                            value, playerStatusProvider.duration)));
+                                  },
+                                  value: min(value.percentageComplete, 1),
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  value.current > playerStatusProvider.duration
+                                      ? Text(formatter.formatDuration(
+                                          playerStatusProvider.duration))
+                                      : Text(
+                                          formatter.formatDuration(value.current)),
+                                  Text(formatter.formatDuration(
+                                      playerStatusProvider.duration))
+                                ],
+                              )
+                            ],
                           ),
-                          GestureDetector(
-                              onTap: () {
-                                playerProvider.audioPlayer.seekToPrevious();
-                              },
-                              child: Icon(Icons.skip_previous)),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (mounted) {
-                                if (playerProvider.audioPlayer.playing) {
-                                  playerProvider.audioPlayer.pause();
-                                } else {
-                                  playerProvider.audioPlayer.play();
+                        ),
+                  
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () => {handleShuffle(context)},
+                              child: Icon(
+                                Icons.shuffle,
+                                color: !mode ? Colors.black : Colors.purple[600],
+                              ),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  playerProvider.audioPlayer.seekToPrevious();
+                                },
+                                child: Icon(Icons.skip_previous)),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (mounted) {
+                                  if (playerProvider.audioPlayer.playing) {
+                                    playerProvider.audioPlayer.pause();
+                                  } else {
+                                    playerProvider.audioPlayer.play();
+                                  }
                                 }
-                              }
-                            },
-                            child: Icon(playerProvider.audioPlayer.playing
-                                ? Icons.pause
-                                : Icons.play_arrow),
-                          ),
-                          GestureDetector(
-                              onTap: () {
-                                playerProvider.audioPlayer.seekToNext();
-                                ();
                               },
-                              child: Icon(Icons.skip_next)),
-                          GestureDetector(
-                            onTap: handleLoop,
-                            child: Icon(
-                              Icons.repeat_rounded,
-                              color: !value.repeat
-                                  ? Colors.black
-                                  : Colors.purple[600],
+                              child: Icon(playerProvider.audioPlayer.playing
+                                  ? Icons.pause
+                                  : Icons.play_arrow),
                             ),
-                          )
-                        ],
-                      )
-                    ],
+                            GestureDetector(
+                                onTap: () {
+                                  playerProvider.audioPlayer.seekToNext();
+                                  ();
+                                },
+                                child: Icon(Icons.skip_next)),
+                            GestureDetector(
+                              onTap: handleLoop,
+                              child: Icon(
+                                Icons.repeat_rounded,
+                                color: !value.repeat
+                                    ? Colors.black
+                                    : Colors.purple[600],
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -316,9 +322,9 @@ class CustomSlider extends RoundedRectSliderTrackShape {
     bool isEnabled = false,
     bool isDiscrete = false,
   }) {
-    final trackHeight = sliderTheme.trackHeight;
+    final trackHeight = sliderTheme.trackHeight! / 2;
     final trackLeft = offset.dx;
-    final trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
+    final trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;
     final trackWidth = parentBox.size.width;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
