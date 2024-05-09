@@ -145,7 +145,7 @@ class _PlayerUIState extends State<PlayerUI> {
           debugShowCheckedModeBanner: false,
           home: Scaffold(
             appBar: AppBar(
-              backgroundColor: Color.fromARGB(255, 30, 28, 28),
+              backgroundColor: Colors.transparent,
               leading: Padding(
                 padding: EdgeInsets.only(left: 25),
                 child: GestureDetector(
@@ -164,7 +164,7 @@ class _PlayerUIState extends State<PlayerUI> {
                     fit: BoxFit.cover),
               ),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
                 child: Padding(
                   padding: const EdgeInsets.only(
                       left: 50, right: 50, top: 50, bottom: 180),
