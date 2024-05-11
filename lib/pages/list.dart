@@ -106,6 +106,9 @@ class ListElement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
+    Color activeColor = isDark
+        ? Color.fromARGB(223, 213, 131, 235)
+        : Color.fromARGB(223, 102, 9, 127);
 
     return Padding(
       padding: const EdgeInsets.only(right: 20, left: 20, top: 8, bottom: 7),
@@ -117,9 +120,9 @@ class ListElement extends StatelessWidget {
               ? Color.fromARGB(255, 40, 38, 38)
               : Color.fromARGB(255, 215, 213, 213),
           border: Border.all(
-              color: const Color.fromARGB(255, 155, 155, 155), width: 1),
+              color: current ? activeColor : Color.fromARGB(255, 155, 155, 155),
+              width: 1),
           borderRadius: BorderRadius.circular(12),
-          // color: current ? Colors.grey[400] : Colors.white,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,19 +141,35 @@ class ListElement extends StatelessWidget {
                       Text(
                         trackName,
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: current
+                                ? activeColor
+                                : Theme.of(context)
+                                    .primaryTextTheme
+                                    .bodyMedium
+                                    ?.color),
                         textAlign: TextAlign.left,
                       ),
                       Text(
                         artistName,
                         textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color: current
+                                ? activeColor
+                                : Theme.of(context)
+                                    .primaryTextTheme
+                                    .bodyMedium
+                                    ?.color),
                       )
                     ],
                   ),
                 )
               ],
             ),
-            Text(trackDuration)
+            current
+                ? Icon(Icons.equalizer, color: activeColor)
+                : Text(trackDuration)
           ],
         ),
       ),
