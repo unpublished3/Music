@@ -137,185 +137,215 @@ class _PlayerUIState extends State<PlayerUI> {
           darkTheme: darkThemeData,
           debugShowCheckedModeBanner: false,
           home: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent.withOpacity(0.3),
-              leading: Padding(
-                padding: EdgeInsets.only(left: 25),
-                child: GestureDetector(
-                  onTap: () => {nagivateToHome()},
-                  child: Icon(
-                    Icons.keyboard_arrow_down_sharp,
-                    size: 40,
-                  ),
-                ),
-              ),
-            ),
-            body: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: playerStatusProvider.albumArt.image,
-                    fit: BoxFit.cover),
-              ),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                child: Container(
-                  color: Colors.black.withOpacity(0.3),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 50, right: 50, top: 50, bottom: 180),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Music Image
-                        GestureDetector(
-                          onPanUpdate: (details) {
-                            if (details.delta.dx.abs() >
-                                details.delta.dy.abs()) {
-                              if (details.delta.dx < 0) {
-                                playerProvider.audioPlayer.seekToNext();
-                                ();
-                              } else if (details.delta.dx > 0) {
-                                playerProvider.audioPlayer.seekToPrevious();
-                              }
-                            }
-                          },
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.35,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                // borderRadius: borderRadius,
-                                image: DecorationImage(
-                                    image:
-                                        playerStatusProvider.albumArt.image)),
-                          ),
-                        ),
+            appBar: appBar(),
+            body: body(context, value, mode),
+          ),
+        ),
+      ),
+    );
+  }
 
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 10),
-                              child: Text(
-                                playerStatusProvider.trackName,
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            Text(
-                              playerStatusProvider.artistName,
-                              textAlign: TextAlign.left,
-                            )
-                          ],
-                        ),
+  AppBar appBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent.withOpacity(0.3),
+      leading: Padding(
+        padding: EdgeInsets.only(left: 25),
+        child: GestureDetector(
+          onTap: () => {nagivateToHome()},
+          child: Icon(
+            Icons.keyboard_arrow_down_sharp,
+            size: 40,
+          ),
+        ),
+      ),
+    );
+  }
 
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                          child: Column(
-                            children: [
-                              SliderTheme(
-                                data: SliderThemeData(
-                                  trackShape: CustomSlider(),
-                                  thumbColor: Colors.white,
-                                  activeTrackColor: Colors.white,
-                                  inactiveTrackColor:
-                                      Color.fromARGB(255, 144, 144, 144),
-                                ),
-                                child: Slider(
-                                  onChanged: (double value) async {
-                                    await playerProvider.audioPlayer.seek(
-                                        Duration(
-                                            seconds: seekLocation(
-                                                value,
-                                                playerStatusProvider
-                                                    .duration)));
-                                  },
-                                  value: min(value.percentageComplete, 1),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  value.current > playerStatusProvider.duration
-                                      ? Text(formatter.formatDuration(
-                                          playerStatusProvider.duration))
-                                      : Text(formatter
-                                          .formatDuration(value.current)),
-                                  Text(formatter.formatDuration(
-                                      playerStatusProvider.duration))
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
+  Container body(BuildContext context, PlayerStatusProvider value, bool mode) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            image: playerStatusProvider.albumArt.image, fit: BoxFit.cover),
+      ),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+        child: Container(
+          color: Colors.black.withOpacity(0.3),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: 50, right: 50, top: 50, bottom: 180),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Music Image
+                AlbumArt(
+                    playerProvider: playerProvider,
+                    playerStatusProvider: playerStatusProvider),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            GestureDetector(
-                              onTap: () => {handleShuffle(context)},
-                              child: Icon(
-                                Icons.shuffle,
-                                color: !mode
-                                    ? Colors.white
-                                    : Color.fromARGB(224, 210, 111, 237),
-                              ),
-                            ),
-                            GestureDetector(
-                                onTap: () {
-                                  playerProvider.audioPlayer.seekToPrevious();
-                                },
-                                child: Icon(Icons.skip_previous)),
-                            TextButton(
-                              onPressed: () {
-                                if (mounted) {
-                                  if (playerProvider.audioPlayer.playing) {
-                                    playerProvider.audioPlayer.pause();
-                                  } else {
-                                    playerProvider.audioPlayer.play();
-                                  }
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                  shape: CircleBorder(),
-                                  padding: EdgeInsets.all(15),
-                                  backgroundColor:
-                                      Colors.white.withOpacity(0.3)),
-                              child: Icon(
-                                playerProvider.audioPlayer.playing
-                                    ? Icons.pause
-                                    : Icons.play_arrow,
-                                color: Colors.white,
-                              ),
-                            ),
-                            GestureDetector(
-                                onTap: () {
-                                  playerProvider.audioPlayer.seekToNext();
-                                  ();
-                                },
-                                child: Icon(Icons.skip_next)),
-                            GestureDetector(
-                              onTap: handleLoop,
-                              child: Icon(
-                                Icons.repeat_rounded,
-                                color: !value.repeat
-                                    ? Colors.white
-                                    : Color.fromARGB(224, 210, 111, 237),
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                Info(playerStatusProvider: playerStatusProvider),
+
+                slider(value),
+
+                controls(context, mode, value)
+              ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Row controls(BuildContext context, bool mode, PlayerStatusProvider value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        GestureDetector(
+          onTap: () => {handleShuffle(context)},
+          child: Icon(
+            Icons.shuffle,
+            color: !mode ? Colors.white : Color.fromARGB(224, 210, 111, 237),
+          ),
+        ),
+        GestureDetector(
+            onTap: () {
+              playerProvider.audioPlayer.seekToPrevious();
+            },
+            child: Icon(Icons.skip_previous)),
+        TextButton(
+          onPressed: () {
+            if (mounted) {
+              if (playerProvider.audioPlayer.playing) {
+                playerProvider.audioPlayer.pause();
+              } else {
+                playerProvider.audioPlayer.play();
+              }
+            }
+          },
+          style: ElevatedButton.styleFrom(
+              shape: CircleBorder(),
+              padding: EdgeInsets.all(15),
+              backgroundColor: Colors.white.withOpacity(0.3)),
+          child: Icon(
+            playerProvider.audioPlayer.playing ? Icons.pause : Icons.play_arrow,
+            color: Colors.white,
+          ),
+        ),
+        GestureDetector(
+            onTap: () {
+              playerProvider.audioPlayer.seekToNext();
+              ();
+            },
+            child: Icon(Icons.skip_next)),
+        GestureDetector(
+          onTap: handleLoop,
+          child: Icon(
+            Icons.repeat_rounded,
+            color: !value.repeat
+                ? Colors.white
+                : Color.fromARGB(224, 210, 111, 237),
+          ),
+        )
+      ],
+    );
+  }
+
+  Padding slider(PlayerStatusProvider value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+      child: Column(
+        children: [
+          SliderTheme(
+            data: SliderThemeData(
+              trackShape: CustomSlider(),
+              thumbColor: Colors.white,
+              activeTrackColor: Colors.white,
+              inactiveTrackColor: Color.fromARGB(255, 144, 144, 144),
+            ),
+            child: Slider(
+              onChanged: (double value) async {
+                await playerProvider.audioPlayer.seek(Duration(
+                    seconds:
+                        seekLocation(value, playerStatusProvider.duration)));
+              },
+              value: min(value.percentageComplete, 1),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              value.current > playerStatusProvider.duration
+                  ? Text(
+                      formatter.formatDuration(playerStatusProvider.duration))
+                  : Text(formatter.formatDuration(value.current)),
+              Text(formatter.formatDuration(playerStatusProvider.duration))
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class Info extends StatelessWidget {
+  const Info({
+    super.key,
+    required this.playerStatusProvider,
+  });
+
+  final PlayerStatusProvider playerStatusProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(bottom: 10),
+          child: Text(
+            playerStatusProvider.trackName,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        Text(
+          playerStatusProvider.artistName,
+          textAlign: TextAlign.left,
+        )
+      ],
+    );
+  }
+}
+
+class AlbumArt extends StatelessWidget {
+  const AlbumArt({
+    super.key,
+    required this.playerProvider,
+    required this.playerStatusProvider,
+  });
+
+  final PlayerProvider playerProvider;
+  final PlayerStatusProvider playerStatusProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onPanUpdate: (details) {
+        if (details.delta.dx.abs() > details.delta.dy.abs()) {
+          if (details.delta.dx < 0) {
+            playerProvider.audioPlayer.seekToNext();
+            ();
+          } else if (details.delta.dx > 0) {
+            playerProvider.audioPlayer.seekToPrevious();
+          }
+        }
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.35,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            // borderRadius: borderRadius,
+            image: DecorationImage(image: playerStatusProvider.albumArt.image)),
       ),
     );
   }
