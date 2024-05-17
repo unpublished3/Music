@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:metadata_god/metadata_god.dart';
@@ -42,11 +43,16 @@ class PlayerProvider extends ChangeNotifier {
         String imagePath;
 
         if (picture != null) {
-          imagePath =
-              await _createFile(picture, basenameWithoutExtension(file.path));
+          imagePath = await _createFile(
+              picture, basenameWithoutExtension(file.path), false);
         } else {
-          imagePath = "/assets/file.jpg";
+          Picture picture = Picture(
+              mimeType: "image/jpeg",
+              data: await getBytesFromAsset("assets/image.jpg"));
+          imagePath = await _createFile(
+              picture, basenameWithoutExtension(file.path), true);
         }
+
         imagePath = "file://$imagePath";
 
         audioSourceList.add(AudioSource.uri(
@@ -93,13 +99,21 @@ class PlayerProvider extends ChangeNotifier {
     await audioPlayer.play();
   }
 
-  Future<String> _createFile(Picture albumArt, String name) async {
+  Future<String> _createFile(Picture albumArt, String name, bool asset) async {
     final tempDir = Directory.systemTemp;
     final image = albumArt.data;
 
-    final File file = File("${tempDir.path}/albumArt${name}music.jpg");
+    final File file = asset
+        ? File("${tempDir.path}/albumArtassetmusic.jpg")
+        : File("${tempDir.path}/albumArt${name}music.jpg");
+
     file.writeAsBytes(image);
 
     return file.path;
+  }
+
+  Future<Uint8List> getBytesFromAsset(String assetPath) async {
+    ByteData data = await rootBundle.load(assetPath);
+    return data.buffer.asUint8List();
   }
 }
